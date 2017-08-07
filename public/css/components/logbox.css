@@ -1,0 +1,13 @@
+.log-box {
+  height: 500px;
+  resize: vertical;
+  overflow-y: scroll;
+  width: 100%;
+  position: relative;
+  padding: 2rem 2rem 2.5rem;
+  margin: 1.5rem 0 0;
+  background-color: #f5f7fa;
+  color: #152935;
+  border: 1px solid #dfe3e6; }
+
+/*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImxvZ2JveC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxjQUFjO0VBQ2QsaUJBQWlCO0VBQ2pCLG1CQUFtQjtFQUNuQixZQUFZO0VBQ1osbUJBQW1CO0VBQ25CLDBCQUEwQjtFQUMxQixtQkFBbUI7RUFDbkIsMEJBQTBCO0VBQzFCLGVBQWU7RUFDZiwwQkFBMEIsRUFBRSIsImZpbGUiOiJjb21wb25lbnRzL2xvZ2JveC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIubG9nLWJveCB7XG4gIGhlaWdodDogNTAwcHg7XG4gIHJlc2l6ZTogdmVydGljYWw7XG4gIG92ZXJmbG93LXk6IHNjcm9sbDtcbiAgd2lkdGg6IDEwMCU7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgcGFkZGluZzogMnJlbSAycmVtIDIuNXJlbTtcbiAgbWFyZ2luOiAxLjVyZW0gMCAwO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjZjVmN2ZhO1xuICBjb2xvcjogIzE1MjkzNTtcbiAgYm9yZGVyOiAxcHggc29saWQgI2RmZTNlNjsgfVxuIl19 */
