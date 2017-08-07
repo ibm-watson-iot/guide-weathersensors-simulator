@@ -1,0 +1,5 @@
+---
+applications:
+- name: weather-sensors-simulator
+  memory: 128MB
+  instances: 1

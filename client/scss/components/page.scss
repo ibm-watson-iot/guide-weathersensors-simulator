@@ -1,0 +1,16 @@
+
+
+.page {
+  margin: 4rem 3% 0;
+  padding-bottom: 5rem;
+}
+@media (min-width: 600px) {
+  .page {
+    margin: 4rem 5% 0;
+  }
+}
+@media (min-width: 840px) {
+  .page {
+    margin: 4rem 12.5% 0;
+  }
+}

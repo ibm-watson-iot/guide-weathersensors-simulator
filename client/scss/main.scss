@@ -1,0 +1,11 @@
+// Carbon components styles
+@import 'node_modules/carbon-components/scss/globals/scss/styles';
+
+// Common styles
+@import './common/style';
+
+// Component styles
+@import './components/page';
+@import './components/form';
+@import './components/textinput';
+@import './components/logbox';

@@ -1,0 +1,12 @@
+.log-box {
+  height: 500px;
+  resize: vertical;
+  overflow-y: scroll;
+  width: 100%;
+  position: relative;
+  padding: 2rem 2rem 2.5rem;
+  margin: 1.5rem 0 0;
+  background-color: #f5f7fa;
+  color: #152935;
+  border: 1px solid #dfe3e6;
+}
