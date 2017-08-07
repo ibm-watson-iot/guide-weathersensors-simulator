@@ -249,7 +249,7 @@ module.exports = (io) => {
         password: DEVICE_PASSWORD,
       });
 
-      let client = createDeviceConnection();
+      const client = createDeviceConnection();
 
       client.on('connect', () => {
         console.log(`Device connection ${clientId} successfully established.`);
