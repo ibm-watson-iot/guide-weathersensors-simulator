@@ -32,7 +32,7 @@ WIOTP_API_ERROR_MESSAGES.set(401, 'The authentication token is empty or invalid'
 WIOTP_API_ERROR_MESSAGES.set(403, 'The authentication method is invalid or the API key used does not exist');
 WIOTP_API_ERROR_MESSAGES.set(404, 'The organization does not exist');
 const SOCKET_MESSAGE_TYPE = 'MESSAGE';
-const SUCCESS_MESSAGE = 'Simulator has completed its tasks. Check the logs for more details.';
+const SUCCESS_MESSAGE = 'Simulator has completed its tasks.';
 
 module.exports = (io) => {
   // Listen to socket connections if io was passed

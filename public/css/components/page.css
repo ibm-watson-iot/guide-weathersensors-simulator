@@ -1,13 +1,4 @@
 .page {
-  margin: 4rem 3% 0;
-  padding-bottom: 5rem; }
+  margin: 1rem; }
 
-@media (min-width: 600px) {
-  .page {
-    margin: 4rem 5% 0; } }
-
-@media (min-width: 840px) {
-  .page {
-    margin: 4rem 12.5% 0; } }
-
-/*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInBhZ2UuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0Usa0JBQWtCO0VBQ2xCLHFCQUFxQixFQUFFOztBQUV6QjtFQUNFO0lBQ0Usa0JBQWtCLEVBQUUsRUFBRTs7QUFFMUI7RUFDRTtJQUNFLHFCQUFxQixFQUFFLEVBQUUiLCJmaWxlIjoiY29tcG9uZW50cy9wYWdlLmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5wYWdlIHtcbiAgbWFyZ2luOiA0cmVtIDMlIDA7XG4gIHBhZGRpbmctYm90dG9tOiA1cmVtOyB9XG5cbkBtZWRpYSAobWluLXdpZHRoOiA2MDBweCkge1xuICAucGFnZSB7XG4gICAgbWFyZ2luOiA0cmVtIDUlIDA7IH0gfVxuXG5AbWVkaWEgKG1pbi13aWR0aDogODQwcHgpIHtcbiAgLnBhZ2Uge1xuICAgIG1hcmdpbjogNHJlbSAxMi41JSAwOyB9IH1cbiJdfQ== */
+/*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInBhZ2UuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0UsYUFBYSxFQUFFIiwiZmlsZSI6ImNvbXBvbmVudHMvcGFnZS5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIucGFnZSB7XG4gIG1hcmdpbjogMXJlbTsgfVxuIl19 */

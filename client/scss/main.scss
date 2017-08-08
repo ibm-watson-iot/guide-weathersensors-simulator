@@ -5,7 +5,10 @@
 @import './common/style';
 
 // Component styles
+@import './components/buttongroup';
 @import './components/page';
 @import './components/form';
 @import './components/textinput';
 @import './components/logbox';
+@import './components/notification';
+@import './components/simulatorframe';

@@ -17,9 +17,12 @@ class LogBox extends Component {
   }
 
   render = () => (
-    <div className="log-box">
-      {this.props.logs.map((log, i) => <p key={i}>{JSON.stringify(log)}</p>)}
-      <div style={{ float: 'left', clear: 'both' }} ref={el => { this.logEnd = el; }} />
+    <div className="bx--form-item">
+      <label htmlFor="log-box" className="bx--label">{'Log'}</label>
+      <div id="log-box" className="log-box">
+        {this.props.logs.map((log, i) => <p key={i}>{JSON.stringify(log)}</p>)}
+        <div style={{ float: 'left', clear: 'both' }} ref={el => { this.logEnd = el; }} />
+      </div>
     </div>
   );
 }

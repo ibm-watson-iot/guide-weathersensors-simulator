@@ -12,9 +12,10 @@ import { ERROR, SUCCESS, INFO } from '../constants/notification';
 import Page from '../components/Page';
 import Form from '../components/Form';
 import InputText from '../components/InputText';
-import Button from '../components/Button';
+import ButtonGroup from '../components/ButtonGroup';
 import LogBox from '../components/LogBox';
 import Notification from '../components/Notification';
+import SimulatorFrame from '../components/SimulatorFrame';
 
 // action creators
 import { updateSimulatorStatus, runSimulator, clearSuccess, clearError, setPublishIntervalDivisor } from '../actions/simulator';
@@ -48,47 +49,70 @@ class Dashboard extends Component {
     const { org, apiKey, authToken } = this.state;
     return (
       <Page>
-        <Form>
-          <InputText
-            id={'org'}
-            label={'WIoTP Org'}
-            value={org}
-            onChange={evt => this.setState({ org: evt.target.value })}
-          />
-          <InputText
-            id={'username'}
-            label={'API Key'}
-            value={apiKey}
-            onChange={evt => this.setState({ apiKey: evt.target.value })}
-          />
-          <InputText
-            id={'password'}
-            type={'password'}
-            label={'Authentication Token'}
-            value={authToken}
-            onChange={evt => this.setState({ authToken: evt.target.value })}
-          />
-          <Button
-            label={'Run Simulator'}
-            onClick={() => {
-              dispatchClearLog();
-              dispatchRunSimulator({
-                wiotp: { org, apiKey, authToken },
-                params: { publishIntervalDivisor },
-              });
-            }}
-            disabled={isSimulatorRunning || !org || !apiKey || !authToken}
-          />
-        </Form>
-        <Notification type={INFO} message={isSimulatorRunning ? 'Running...' : 'Not running'} />
+        {!success && !error ? <Notification type={INFO} message={isSimulatorRunning ? 'Running...' : 'Not running'} /> : null}
         {success ? <Notification type={SUCCESS} message={success} onClick={dispatchClearSuccess} /> : null}
         {error ? <Notification type={ERROR} message={error} onClick={dispatchClearError} /> : null}
-        <LogBox logs={logArray} />
-        <Button
-          label={'Clear logs'}
-          onClick={() => {
-            dispatchClearLog();
-          }}
+        <SimulatorFrame
+          inputForm={
+            <Form>
+              <InputText
+                id={'org'}
+                label={'WIoTP Org'}
+                value={org}
+                onChange={evt => this.setState({ org: evt.target.value })}
+              />
+              <InputText
+                id={'username'}
+                label={'API Key'}
+                value={apiKey}
+                onChange={evt => this.setState({ apiKey: evt.target.value })}
+              />
+              <InputText
+                id={'password'}
+                type={'password'}
+                label={'Authentication Token'}
+                value={authToken}
+                onChange={evt => this.setState({ authToken: evt.target.value })}
+              />
+              <ButtonGroup
+                buttons={[{
+                  label: 'Run Simulator',
+                  onClick: () => {
+                    dispatchClearLog();
+                    dispatchRunSimulator({
+                      wiotp: { org, apiKey, authToken },
+                      params: { publishIntervalDivisor },
+                    });
+                  },
+                  disabled: isSimulatorRunning || !org || !apiKey || !authToken,
+                }]}
+                centered
+              />
+            </Form>
+          }
+          logForm={
+            <Form>
+              <LogBox logs={logArray} />
+              <ButtonGroup
+                buttons={[{
+                  label: 'Clear all data',
+                  onClick: () => {
+                    dispatchClearLog();
+                    dispatchRunSimulator({
+                      wiotp: { org, apiKey, authToken },
+                      params: { delete: true },
+                    });
+                  },
+                  disabled: isSimulatorRunning || !org || !apiKey || !authToken,
+                }, {
+                  label: 'Clear logs',
+                  onClick: () => {
+                    dispatchClearLog();
+                  },
+                }]}
+              />
+            </Form>
+          }
         />
       </Page>
     );
