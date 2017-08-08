@@ -1,4 +1,4 @@
-import { SET_IS_RUNNING, SET_SUCCESS, SET_ERROR } from '../constants/simulator';
+import { SET_IS_RUNNING, SET_SUCCESS, SET_ERROR, SET_PUBLISH_INTERVAL_DIVISOR } from '../constants/simulator';
 import SimulatorService from '../services/simulator';
 
 
@@ -15,6 +15,11 @@ const setSuccess = (message) => ({
 const setError = (message) => ({
   type: SET_ERROR,
   message,
+});
+
+export const setPublishIntervalDivisor = (publishIntervalDivisor) => ({
+  type: SET_PUBLISH_INTERVAL_DIVISOR,
+  publishIntervalDivisor,
 });
 
 export const clearSuccess = () => (dispatch) => dispatch(setSuccess(''));
@@ -58,3 +63,4 @@ export const stopSimulator = () => (dispatch) => {
     dispatch(setError(e.message));
   });
 };
+

@@ -2,9 +2,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+// Utils
+import { getUrlQueryParameters } from '../util/util';
+
 // Constants
 import { ERROR, SUCCESS, INFO } from '../constants/notification';
-import { PUBLISH_INTERVAL_DIVISOR } from '../constants/simulator';
 
 // components
 import Page from '../components/Page';
@@ -15,7 +17,7 @@ import LogBox from '../components/LogBox';
 import Notification from '../components/Notification';
 
 // action creators
-import { updateSimulatorStatus, runSimulator, clearSuccess, clearError } from '../actions/simulator';
+import { updateSimulatorStatus, runSimulator, clearSuccess, clearError, setPublishIntervalDivisor } from '../actions/simulator';
 import { clearLog } from '../actions/simulatorLog';
 
 class Dashboard extends Component {
@@ -25,17 +27,25 @@ class Dashboard extends Component {
       org: '',
       apiKey: '',
       authToken: '',
-      publishIntervalDivisor: PUBLISH_INTERVAL_DIVISOR,
     };
   }
 
   componentWillMount() {
-    this.props.dispatchUpdateSimulatorStatus();
+    const { dispatchUpdateSimulatorStatus, dispatchSetPublishIntervalDivisor } = this.props;
+    // If simulator is running, set the isRunning state flag.
+    dispatchUpdateSimulatorStatus();
+    // If divisor was passed, set the value to the state.
+    const { divisor } = getUrlQueryParameters();
+    const publishIntervalDivisor = parseFloat(divisor);
+    if (publishIntervalDivisor) {
+      dispatchSetPublishIntervalDivisor(publishIntervalDivisor);
+    }
   }
 
   render() {
-    const { isSimulatorRunning, success, error, logArray, dispatchRunSimulator, dispatchClearLog, dispatchClearSuccess, dispatchClearError } = this.props;
-    const { org, apiKey, authToken, publishIntervalDivisor } = this.state;
+    const { publishIntervalDivisor, isSimulatorRunning, success, error, logArray,
+      dispatchRunSimulator, dispatchClearLog, dispatchClearSuccess, dispatchClearError } = this.props;
+    const { org, apiKey, authToken } = this.state;
     return (
       <Page>
         <Form>
@@ -86,6 +96,7 @@ class Dashboard extends Component {
 }
 
 const mapStateToProps = (state) => ({
+  publishIntervalDivisor: state.simulator.publishIntervalDivisor,
   isSimulatorRunning: state.simulator.isRunning,
   success: state.simulator.success,
   error: state.simulator.error,
@@ -93,6 +104,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  dispatchSetPublishIntervalDivisor: (divisor) => dispatch(setPublishIntervalDivisor(divisor)),
   dispatchUpdateSimulatorStatus: () => dispatch(updateSimulatorStatus()),
   dispatchRunSimulator: (config) => dispatch(runSimulator(config)),
   dispatchClearLog: () => dispatch(clearLog()),
