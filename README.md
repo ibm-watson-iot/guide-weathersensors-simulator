@@ -28,3 +28,16 @@ If you want to delete the devices and device types created by the simulator from
 ### Troubleshooting
 
 If you notice any problems in the simulator, try restarting the web app in [Bluemix Apps dashboard](https://console.bluemix.net/dashboard/apps). Once it restarts, refresh the page and try running the simulator again.
+
+## Useful links
+[Install Node.js]: https://nodejs.org/en/download/
+[bluemix_dashboard_url]: https://console.ng.bluemix.net/dashboard/
+[bluemix_signup_url]: https://console.ng.bluemix.net/registration/
+[cloud_foundry_url]: https://github.com/cloudfoundry/cli
+
+[IBM Bluemix](https://bluemix.net/)  
+[IBM Bluemix Documentation](https://www.ng.bluemix.net/docs/)  
+[IBM Bluemix Developers Community](http://developer.ibm.com/bluemix)  
+[IBM Watson Internet of Things](http://www.ibm.com/internet-of-things/)  
+[IBM Watson IoT Platform](http://www.ibm.com/internet-of-things/iot-solutions/watson-iot-platform/)   
+[IBM Watson IoT Platform Developers Community](https://developer.ibm.com/iotplatform/)
