@@ -41080,7 +41080,7 @@
 	              _react2['default'].createElement(_LogBox2['default'], { logs: logArray }),
 	              _react2['default'].createElement(_ButtonGroup2['default'], {
 	                buttons: [{
-	                  label: 'Clear all data',
+	                  label: 'Delete simulated devices',
 	                  onClick: function () {
 	                    function onClick() {
 	                      dispatchClearLog();

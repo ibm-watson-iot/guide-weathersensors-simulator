@@ -96,7 +96,7 @@ class Dashboard extends Component {
               <LogBox logs={logArray} />
               <ButtonGroup
                 buttons={[{
-                  label: 'Clear all data',
+                  label: 'Delete simulated devices',
                   onClick: () => {
                     dispatchClearLog();
                     dispatchRunSimulator({

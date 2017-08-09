@@ -320,7 +320,7 @@ module.exports = (io) => {
 
   // Delay the execution of a function that returns a promise
   const delayPromiseExecution = (promiseFunction, milliseconds) => new Promise(resolve => {
-    console.log(`Delaying ${millisecondsToHHMMSS(milliseconds)} ...`);
+    console.log(`Waiting for next device event to be published in ${millisecondsToHHMMSS(milliseconds)} ...`);
     // This flag should always be true while the simulation is running, if it is set to false, it means that the user has interrupted the simulator.
     if (running) {
       setTimeout(() => {
