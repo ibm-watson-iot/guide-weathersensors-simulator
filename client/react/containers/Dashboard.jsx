@@ -5,9 +5,6 @@ import { connect } from 'react-redux';
 // Utils
 import { getUrlQueryParameters } from '../util/util';
 
-// Constants
-import { ERROR, SUCCESS, INFO } from '../constants/notification';
-
 // components
 import Page from '../components/Page';
 import Form from '../components/Form';
@@ -35,6 +32,7 @@ class Dashboard extends Component {
     const { dispatchUpdateSimulatorStatus, dispatchSetPublishIntervalDivisor } = this.props;
     // If simulator is running, set the isRunning state flag.
     dispatchUpdateSimulatorStatus();
+    setInterval(dispatchUpdateSimulatorStatus, 5000);
     // If divisor was passed, set the value to the state.
     const { divisor } = getUrlQueryParameters();
     const publishIntervalDivisor = parseFloat(divisor);
@@ -44,14 +42,17 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { publishIntervalDivisor, isSimulatorRunning, success, error, logArray,
-      dispatchRunSimulator, dispatchClearLog, dispatchClearSuccess, dispatchClearError } = this.props;
+    const { publishIntervalDivisor, isSimulatorRunning, logArray, lastRelevantLog,
+      dispatchRunSimulator, dispatchClearLog } = this.props;
     const { org, apiKey, authToken } = this.state;
+    const defaultNotificationMessage = (!org || !apiKey || !authToken)
+        ? 'Enter WIoTP org and credentials then click on Run Simulator.'
+        : 'Click on Run Simulator.';
+    const notificationType = lastRelevantLog.type;
+    const notificationMessage = lastRelevantLog.message || (isSimulatorRunning ? 'Simulator running ...' : defaultNotificationMessage);
     return (
       <Page>
-        {!success && !error ? <Notification type={INFO} message={isSimulatorRunning ? 'Running...' : 'Not running'} /> : null}
-        {success ? <Notification type={SUCCESS} message={success} onClick={dispatchClearSuccess} /> : null}
-        {error ? <Notification type={ERROR} message={error} onClick={dispatchClearError} /> : null}
+        {<Notification type={notificationType} message={notificationMessage} />}
         <SimulatorFrame
           inputForm={
             <Form>
@@ -125,6 +126,7 @@ const mapStateToProps = (state) => ({
   success: state.simulator.success,
   error: state.simulator.error,
   logArray: state.simulatorLog.completeLog,
+  lastRelevantLog: state.simulatorLog.lastRelevantLog,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -14,9 +14,10 @@ module.exports = (io, middlewares) => {
   router.get('/status', (req, res) => res.send({ isRunning: simulator.isRunning() }));
 
   router.post('/run', (req, res) => {
-    simulator.run(req)
-      .then((result) => res.send({ result }))
-      .catch((e) => res.status(500).send({ error: true, message: e.message }));
+    // Return from the POST command regardless of the primise result
+    // because the logs will be sent to the UI via socket
+    simulator.run(req);
+    res.send({});
   });
 
   router.post('/stop', (req, res) => {

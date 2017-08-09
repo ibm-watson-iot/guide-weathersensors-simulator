@@ -24,11 +24,10 @@ const Notification = ({ type, message, onClick }) => {
       icon = <path d="M8 1L0 15h16L8 1zm-.8 5h1.5v1.4L8.3 11h-.8l-.4-3.6V6h.1zm.8 8c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1z"></path>;
       break;
     case INFO:
+    default:
       notificationTitle = 'Info:';
       colorClass = 'bx--inline-notification--info';
       icon = <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 4c.6 0 1 .4 1 1s-.4 1-1 1-1-.4-1-1 .4-1 1-1zm2 8H6v-1h1V8H6V7h3v4h1v1z"></path>;
-      break;
-    default:
       break;
   }
   return (

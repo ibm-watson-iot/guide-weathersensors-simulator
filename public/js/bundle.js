@@ -60,7 +60,7 @@
 	
 	var _store2 = _interopRequireDefault(_store);
 	
-	var _Dashboard = __webpack_require__(602);
+	var _Dashboard = __webpack_require__(603);
 	
 	var _Dashboard2 = _interopRequireDefault(_Dashboard);
 	
@@ -40761,7 +40761,6 @@
 	
 	var initialState = {
 	  isRunning: false,
-	  success: '',
 	  error: '',
 	  publishIntervalDivisor: _simulator.DEFAULT_PUBLISH_INTERVAL_DIVISOR
 	};
@@ -40773,13 +40772,10 @@
 	  switch (action.type) {
 	
 	    case _simulator.SET_IS_RUNNING:
-	      return Object.assign({}, state, { success: '', error: '', isRunning: action.isRunning });
-	
-	    case _simulator.SET_SUCCESS:
-	      return Object.assign({}, state, { success: action.message, error: '' });
+	      return Object.assign({}, state, { error: '', isRunning: action.isRunning });
 	
 	    case _simulator.SET_ERROR:
-	      return Object.assign({}, state, { success: '', error: action.message });
+	      return Object.assign({}, state, { error: action.message });
 	
 	    case _simulator.SET_PUBLISH_INTERVAL_DIVISOR:
 	      return Object.assign({}, state, { publishIntervalDivisor: action.publishIntervalDivisor });
@@ -40801,7 +40797,6 @@
 	});
 	// Actions
 	var SET_IS_RUNNING = exports.SET_IS_RUNNING = 'SET_IS_RUNNING';
-	var SET_SUCCESS = exports.SET_SUCCESS = 'SET_SUCCESS';
 	var SET_ERROR = exports.SET_ERROR = 'SET_ERROR';
 	var SET_PUBLISH_INTERVAL_DIVISOR = exports.SET_PUBLISH_INTERVAL_DIVISOR = 'SET_PUBLISH_INTERVAL_DIVISOR';
 	
@@ -40824,6 +40819,7 @@
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 	
 	var initialState = {
+	  lastRelevantLog: {},
 	  completeLog: []
 	};
 	
@@ -40831,22 +40827,46 @@
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
 	  var action = arguments[1];
 	
+	  var relevantLog = void 0;
 	  switch (action.type) {
 	
 	    case _simulatorLog.CLEAR_LOG:
-	      return Object.assign({}, state, { completeLog: [] });
+	      return initialState;
 	
 	    case _simulatorLog.MESSAGE:
-	      return Object.assign({}, state, { completeLog: [].concat(_toConsumableArray(state.completeLog), [action.log]) });
+	      relevantLog = _simulatorLog.RELEVANT_LOGS.find(function (r) {
+	        return action.log && action.log.startsWith && action.log.startsWith(r.prefix);
+	      });
+	      return Object.assign({}, state, {
+	        completeLog: [].concat(_toConsumableArray(state.completeLog), [action.log]),
+	        lastRelevantLog: relevantLog ? { message: action.log.split(relevantLog.prefix)[1], type: relevantLog.type } : state.lastRelevantLog
+	      });
 	
 	    default:
 	      return state;
-	
 	  }
 	};
 
 /***/ }),
 /* 601 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.RELEVANT_LOGS = exports.CLEAR_LOG = exports.MESSAGE = undefined;
+	
+	var _notification = __webpack_require__(602);
+	
+	var MESSAGE = exports.MESSAGE = 'MESSAGE'; // Constants
+	var CLEAR_LOG = exports.CLEAR_LOG = 'CLEAR_LOG';
+	
+	var RELEVANT_LOGS = exports.RELEVANT_LOGS = [{ prefix: '[SUCCESS]', type: _notification.SUCCESS }, { prefix: '[ERROR]', type: _notification.ERROR }, { prefix: '[INFO]', type: _notification.INFO }, { prefix: '[WARNING]', type: _notification.WARNING }];
+
+/***/ }),
+/* 602 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -40854,11 +40874,13 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var MESSAGE = exports.MESSAGE = 'MESSAGE';
-	var CLEAR_LOG = exports.CLEAR_LOG = 'CLEAR_LOG';
+	var ERROR = exports.ERROR = 'ERROR';
+	var WARNING = exports.WARNING = 'WARNING';
+	var INFO = exports.INFO = 'INFO';
+	var SUCCESS = exports.SUCCESS = 'SUCCESS';
 
 /***/ }),
-/* 602 */
+/* 603 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -40875,9 +40897,7 @@
 	
 	var _reactRedux = __webpack_require__(371);
 	
-	var _util = __webpack_require__(603);
-	
-	var _notification = __webpack_require__(604);
+	var _util = __webpack_require__(604);
 	
 	var _Page = __webpack_require__(605);
 	
@@ -40923,9 +40943,6 @@
 	// Utils
 	
 	
-	// Constants
-	
-	
 	// components
 	
 	
@@ -40958,6 +40975,7 @@
 	        // If simulator is running, set the isRunning state flag.
 	
 	        dispatchUpdateSimulatorStatus();
+	        setInterval(dispatchUpdateSimulatorStatus, 5000);
 	        // If divisor was passed, set the value to the state.
 	
 	        var _getUrlQueryParameter = (0, _util.getUrlQueryParameters)(),
@@ -40980,24 +40998,22 @@
 	        var _props2 = this.props,
 	            publishIntervalDivisor = _props2.publishIntervalDivisor,
 	            isSimulatorRunning = _props2.isSimulatorRunning,
-	            success = _props2.success,
-	            error = _props2.error,
 	            logArray = _props2.logArray,
+	            lastRelevantLog = _props2.lastRelevantLog,
 	            dispatchRunSimulator = _props2.dispatchRunSimulator,
-	            dispatchClearLog = _props2.dispatchClearLog,
-	            dispatchClearSuccess = _props2.dispatchClearSuccess,
-	            dispatchClearError = _props2.dispatchClearError;
+	            dispatchClearLog = _props2.dispatchClearLog;
 	        var _state = this.state,
 	            org = _state.org,
 	            apiKey = _state.apiKey,
 	            authToken = _state.authToken;
 	
+	        var defaultNotificationMessage = !org || !apiKey || !authToken ? 'Enter WIoTP org and credentials then click on Run Simulator.' : 'Click on Run Simulator.';
+	        var notificationType = lastRelevantLog.type;
+	        var notificationMessage = lastRelevantLog.message || (isSimulatorRunning ? 'Simulator running ...' : defaultNotificationMessage);
 	        return _react2['default'].createElement(
 	          _Page2['default'],
 	          null,
-	          !success && !error ? _react2['default'].createElement(_Notification2['default'], { type: _notification.INFO, message: isSimulatorRunning ? 'Running...' : 'Not running' }) : null,
-	          success ? _react2['default'].createElement(_Notification2['default'], { type: _notification.SUCCESS, message: success, onClick: dispatchClearSuccess }) : null,
-	          error ? _react2['default'].createElement(_Notification2['default'], { type: _notification.ERROR, message: error, onClick: dispatchClearError }) : null,
+	          _react2['default'].createElement(_Notification2['default'], { type: notificationType, message: notificationMessage }),
 	          _react2['default'].createElement(_SimulatorFrame2['default'], {
 	            inputForm: _react2['default'].createElement(
 	              _Form2['default'],
@@ -41106,7 +41122,8 @@
 	    isSimulatorRunning: state.simulator.isRunning,
 	    success: state.simulator.success,
 	    error: state.simulator.error,
-	    logArray: state.simulatorLog.completeLog
+	    logArray: state.simulatorLog.completeLog,
+	    lastRelevantLog: state.simulatorLog.lastRelevantLog
 	  };
 	};
 	
@@ -41160,7 +41177,7 @@
 	exports['default'] = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Dashboard);
 
 /***/ }),
-/* 603 */
+/* 604 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -41177,20 +41194,6 @@
 	  });
 	  return result;
 	};
-
-/***/ }),
-/* 604 */
-/***/ (function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var ERROR = exports.ERROR = 'ERROR';
-	var WARNING = exports.WARNING = 'WARNING';
-	var INFO = exports.INFO = 'INFO';
-	var SUCCESS = exports.SUCCESS = 'SUCCESS';
 
 /***/ }),
 /* 605 */
@@ -41302,13 +41305,14 @@
 	  return _react2['default'].createElement(
 	    'div',
 	    { className: 'bx--form-item ' + (centered ? 'centered' : '') },
-	    buttons.map(function (_ref2) {
+	    buttons.map(function (_ref2, i) {
 	      var label = _ref2.label,
 	          onClick = _ref2.onClick,
 	          disabled = _ref2.disabled;
 	      return _react2['default'].createElement(
 	        'button',
 	        {
+	          key: i,
 	          className: 'bx--btn bx--btn--primary',
 	          type: 'button',
 	          onClick: onClick,
@@ -41437,7 +41441,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _notification = __webpack_require__(604);
+	var _notification = __webpack_require__(602);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
@@ -41467,11 +41471,10 @@
 	      icon = _react2['default'].createElement('path', { d: 'M8 1L0 15h16L8 1zm-.8 5h1.5v1.4L8.3 11h-.8l-.4-3.6V6h.1zm.8 8c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1z' });
 	      break;
 	    case _notification.INFO:
+	    default:
 	      notificationTitle = 'Info:';
 	      colorClass = 'bx--inline-notification--info';
 	      icon = _react2['default'].createElement('path', { d: 'M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 4c.6 0 1 .4 1 1s-.4 1-1 1-1-.4-1-1 .4-1 1-1zm2 8H6v-1h1V8H6V7h3v4h1v1z' });
-	      break;
-	    default:
 	      break;
 	  }
 	  return _react2['default'].createElement(
@@ -41559,7 +41562,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.stopSimulator = exports.updateSimulatorStatus = exports.runSimulator = exports.clearError = exports.clearSuccess = exports.setPublishIntervalDivisor = undefined;
+	exports.stopSimulator = exports.updateSimulatorStatus = exports.runSimulator = exports.clearError = exports.setPublishIntervalDivisor = undefined;
 	
 	var _simulator = __webpack_require__(599);
 	
@@ -41573,13 +41576,6 @@
 	  return {
 	    type: _simulator.SET_IS_RUNNING,
 	    isRunning: isRunning
-	  };
-	};
-	
-	var setSuccess = function setSuccess(message) {
-	  return {
-	    type: _simulator.SET_SUCCESS,
-	    message: message
 	  };
 	};
 	
@@ -41597,12 +41593,6 @@
 	  };
 	};
 	
-	var clearSuccess = exports.clearSuccess = function clearSuccess() {
-	  return function (dispatch) {
-	    return dispatch(setSuccess(''));
-	  };
-	};
-	
 	var clearError = exports.clearError = function clearError() {
 	  return function (dispatch) {
 	    return dispatch(setError(''));
@@ -41613,11 +41603,9 @@
 	  return function (dispatch) {
 	    dispatch(setIsRunning(true));
 	    _simulator3['default'].run(config).then(function (response) {
-	      dispatch(setIsRunning(false));
 	      if (response.error) {
 	        dispatch(setError(response.message));
-	      } else {
-	        dispatch(setSuccess(response.result && response.result.message));
+	        dispatch(setIsRunning(false));
 	      }
 	    })['catch'](function (e) {
 	      dispatch(setIsRunning(false));

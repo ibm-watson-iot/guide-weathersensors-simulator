@@ -32,14 +32,13 @@ WIOTP_API_ERROR_MESSAGES.set(401, 'The authentication token is empty or invalid'
 WIOTP_API_ERROR_MESSAGES.set(403, 'The authentication method is invalid or the API key used does not exist');
 WIOTP_API_ERROR_MESSAGES.set(404, 'The organization does not exist');
 const SOCKET_MESSAGE_TYPE = 'MESSAGE';
-const SUCCESS_MESSAGE = 'Simulator has completed its tasks.';
 
 module.exports = (io) => {
   // Listen to socket connections if io was passed
   // Then override console.log so that it also fires socket.emit()
   if (io) {
-    io.on('connection', (socket) => {
-      const consoleLog = console.log;
+    const consoleLog = console.log;
+    io.on('connection', socket => {
       console.log = (log) => {
         socket.emit('action', { type: SOCKET_MESSAGE_TYPE, log });
         consoleLog(log);
@@ -310,11 +309,13 @@ module.exports = (io) => {
   let running = false;
   const rejectWithError = (error, reject) => {
     running = false;
+    console.log('[ERROR] An error has occurred.');
     reject(error);
   };
-  const resolveWithSuccess = (resolve) => {
+  const resolveWithSuccess = (message, resolve) => {
     running = false;
-    resolve({ message: SUCCESS_MESSAGE });
+    console.log(message);
+    resolve({ message });
   };
 
   // Delay the execution of a function that returns a promise
@@ -327,7 +328,7 @@ module.exports = (io) => {
       }, milliseconds);
     }
     else {
-      console.log('Simulation cancelled, ignoring device event.');
+      console.log('[WARNING] Simulation cancelled, ignoring device event.');
       resolve();
     }
   });
@@ -417,45 +418,48 @@ module.exports = (io) => {
 
         // Run the selected job in the simulator ('delete', 'rebuild', 'simulate', or the default option which is 'rebuild then simulate')
         if (DELETE_DATA) {
-          return deleteWIoTPDevicesDataFromSimulatedDataFile(CSV_FILE_PATH)
-            .then(() => console.log(`Finished deleting devices and device types in ${getExecutionTime(startDate)}`))
-            .then(() => resolveWithSuccess(resolve))
+          return Promise.resolve(console.log('[INFO] Deleting devices and device types ...'))
+            .then(() => deleteWIoTPDevicesDataFromSimulatedDataFile(CSV_FILE_PATH))
+            .then(() => resolveWithSuccess(`[SUCCESS] Devices and device types deleted in ${getExecutionTime(startDate)}`, resolve))
             .catch(e => rejectWithError(e, reject));
         }
         else if (REBUILD_DATA) {
-          return rebuildWIoTPDevicesDataFromSimulatedDataFile(CSV_FILE_PATH)
-            .then(() => console.log(`Finished rebuilding devices and device types in ${getExecutionTime(startDate)}`))
-            .then(() => resolveWithSuccess(resolve))
+          return Promise.resolve(console.log('[INFO] Deleting and recreating devices and device types ...'))
+            .then(() => rebuildWIoTPDevicesDataFromSimulatedDataFile(CSV_FILE_PATH))
+            .then(() => resolveWithSuccess(`[SUCCESS] Devices and device types rebuilt in ${getExecutionTime(startDate)}`, resolve))
             .catch(e => rejectWithError(e, reject));
         }
         else if (SIMULATE_DATA) {
-          return checkOrg()
+          return Promise.resolve(console.log('[INFO] Checking organization ...'))
+            .then(() => checkOrg())
             .then(() => extractDataFromSimulatedDataFile(CSV_FILE_PATH))
             .then(({ devices, simulatedData }) => getDevicesFromSimulatedData(simulatedData)
-              .then(() => console.log('Simulation data successfully read from CSV file. Connecting devices ...'))
+              .then(() => console.log('[INFO] Connecting devices ...'))
               .then(() => connectDevices(devices))
-              .then((connectionsMap) => Promise.resolve(console.log('Devices connected. Starting simulation ...'))
+              .then((connectionsMap) => Promise.resolve(console.log('[INFO] Publishing events (check your devices in WIoTP to see the events) ...'))
                 .then(() => simulate(simulatedData, connectionsMap))
-                .then(() => console.log(`Simulation ended (${numberOfPayloadsPublished} events published). Disconnecting devices ...`))
+                .then(() => console.log('[INFO] Disconnecting devices ...'))
                 .then(() => disconnectDevices(connectionsMap))
               )
             )
             .then(() => console.log(`Done in ${getExecutionTime(startDate)}`))
-            .then(() => resolveWithSuccess(resolve))
+            .then(() => resolveWithSuccess(`[SUCCESS] Simulation ended. ${numberOfPayloadsPublished} events were published in ${getExecutionTime(startDate)}`,
+              resolve))
             .catch(e => rejectWithError(e, reject));
         }
         else if (REBUILD_AND_SIMULATE_DATA) {
-          return rebuildWIoTPDevicesDataFromSimulatedDataFile(CSV_FILE_PATH)
-            .then(({ devices, simulatedData }) => Promise.resolve(() => console.log('Devices and device types successfully created. Connecting devices ...'))
+          return Promise.resolve(console.log('[INFO] Simulation started. Creating devices and device types ...'))
+            .then(() => rebuildWIoTPDevicesDataFromSimulatedDataFile(CSV_FILE_PATH))
+            .then(({ devices, simulatedData }) => Promise.resolve(console.log('[INFO] Connecting devices ...'))
               .then(() => connectDevices(devices))
-              .then((connectionsMap) => Promise.resolve(console.log('Devices connected. Starting simulation ...'))
+              .then((connectionsMap) => Promise.resolve(console.log('[INFO] Publishing events (check your devices in WIoTP to see the events) ...'))
                 .then(() => simulate(simulatedData, connectionsMap))
-                .then(() => console.log(`Simulation ended (${numberOfPayloadsPublished} events published). Disconnecting devices ...`))
+                .then(() => console.log('[INFO] Disconnecting devices ...'))
                 .then(() => disconnectDevices(connectionsMap))
               )
             )
-            .then(() => console.log(`Done in ${getExecutionTime(startDate)}`))
-            .then(() => resolveWithSuccess(resolve))
+            .then(() => resolveWithSuccess(`[SUCCESS] Simulation ended. ${numberOfPayloadsPublished} events were published in ${getExecutionTime(startDate)}`,
+              resolve))
             .catch(e => rejectWithError(e, reject));
         }
         return null;
