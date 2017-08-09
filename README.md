@@ -4,6 +4,7 @@ This sample application is included as a component in a set of guides that step 
 For more information about the guides, see the [Watson IoT Platform documentation](https://console.bluemix.net/docs/services/IoT/getting_started/getting-started-iot-overview.html).
 
 # Weather sensors simulator
+<img src="preview.png">
 
 A web app that simulates several weather sensors in the Haifa region that send data to IBM Watson IoT Platform.
 
