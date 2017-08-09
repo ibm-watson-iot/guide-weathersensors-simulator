@@ -349,7 +349,7 @@ module.exports = (io) => {
 
       // Simulator params
       const CSV_FILE_PATH = params.csvFilePath || DEFAULT_CSV_FILE_PATH;
-      const EVENT_INTERVAL_DIVISOR = params.publishIntervalDivisor || 100;
+      const EVENT_INTERVAL_DIVISOR = params.publishIntervalDivisor || 1;
       const DELETE_DATA = params.delete || false;
       const REBUILD_DATA = params.rebuild || false;
       const SIMULATE_DATA = params.simulate || false;
