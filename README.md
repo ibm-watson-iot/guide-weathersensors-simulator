@@ -27,4 +27,4 @@ If you want to delete the devices and device types created by the simulator from
 
 ### Troubleshooting
 
-If you notice any problems in the simulator, try restarting the App in Bluemix Apps dashboard. When it is up and running again, refresh the page and try again.
+If you notice any problems in the simulator, try restarting the web app in [Bluemix Apps dashboard](https://console.bluemix.net/dashboard/apps). Once it restarts, refresh the page and try running the simulator again.
