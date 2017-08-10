@@ -66,5 +66,10 @@
     "redux-thunk": "^2.0.1",
     "run-sequence": "^1.1.4",
     "carbon-components": "^7.17.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ibm-watson-iot/guide-weathersensors-simulator"
+  },
+  "license": "EPL-1.0"  
 }
