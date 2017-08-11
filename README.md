@@ -1,10 +1,9 @@
 ## Watson IoT Platform getting started guides
 
-This sample application is included as a component in a set of guides that step through the basics of integrating IBM Watson IoT Platform with IBM Watson Analytics and IBM Data Science Experience.
-For more information about the guides, see the [Watson IoT Platform documentation](https://console.bluemix.net/docs/services/IoT/getting_started/getting-started-iot-overview.html).
+This sample application is included as a component in a set of guides that step through the basics of integrating IBM Watson IoT Platform with IBM Watson Analytics and IBM Data Science Experience. For more information about the guides, see the [Watson IoT Platform documentation](https://console.bluemix.net/docs/services/IoT/getting_started/getting-started-iot-overview.html).
 
 # Weather sensors simulator
-<img src="preview.png">
+<img src="./images/simulator_running.png">
 
 A web app that simulates several weather sensors in the Haifa region that send data to IBM Watson IoT Platform.
 
@@ -12,18 +11,31 @@ A web app that simulates several weather sensors in the Haifa region that send d
 
 ### Deploy through Bluemix devOps
 
-Click on the button below and follow the instructions in Bluemix to deploy and view your web app (you might want to right-click and select "Open Link in New Tab" so that you can go back to this tab later).
+1. Click on the button below and follow the instructions in Bluemix to deploy and view your web app.
 
 [![Create toolchain](https://bluemix.net/devops/graphics/create_toolchain_button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-watson-iot/guide-weathersensors-simulator)
-<br />(via Continuous Delivery)
 
-The device simulator will need access to your WIoTP service in order to delete/create devices and device types, and also to publish device events. WIoTP access credentials are called API key and authentication token. Follow the instructions on [step 5 of this recipe](https://developer.ibm.com/recipes/tutorials/how-to-register-devices-in-ibm-iot-foundation/#r_step5) to create the credentials. Don't forget to write down the authentication token as it will not be available after you finish the process of creating your API key.
-You will also need the ID of your WIoTP service (also called "Org"). It can be found underneath your user name on the top right corner of the WIoTP page.
+2. Click View app to launch your web app once the pipeline has deployed the app. (The deployment takes a few minutes. You can check the status by clicking the Delivery pipeline tile.) 
 
-Back to the simulator web app, fill in the fields (org, API Key and authentication token), then click on **Run Simulator**.
+<img src="./images/bluemix_deploy.png">
 
-The information box at the top will display the current status of simulation. When done, you should see a **success** message.  
-If you want to delete the devices and device types created by the simulator from your WIoTP service, just click on **Delete simulated devices**.
+3. In the device simulator app, you need to provide your IoTP Org ID, API Key and Authentication Token for it to access your IoTP service to delete/create devices and device types, and also to publish device events. Your WIoTP Org ID can be found underneath your user name on the top right corner of WIoTP menu bar as shown below.
+
+<img src="./images/wiotp_org.png">
+
+To obtain your IoTP credential, click on Apps option in the IoT platform left navigator and generate API key and authentication token. Don't forget to write down the authentication token as it will not be available after you finish the process of creating your API key.  
+
+<img src="./images/wiotp_generate_api_key.png">
+
+<img src="./images/wiotp_api_key_token.png">
+
+Back to the simulator web app, fill in the fields (org, API Key and authentication token), then click on Run Simulator.
+
+4. The information box at the top will display the current status of simulation. When the simulation is done, you should see a success message.
+
+If you want to delete the devices and device types created by the simulator from your WIoTP service, just click on Delete simulated devices.
+
+<img src="./images/simulator_finished.png">
 
 ### Troubleshooting
 
