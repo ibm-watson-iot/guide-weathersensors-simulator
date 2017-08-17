@@ -39,10 +39,14 @@ module.exports = (io) => {
   if (io) {
     const consoleLog = console.log;
     io.on('connection', socket => {
+      consoleLog('Client connected');
       console.log = (log) => {
         socket.emit('action', { type: SOCKET_MESSAGE_TYPE, log });
         consoleLog(log);
       };
+      socket.on('disconnect', () => {
+        consoleLog('Client disconnected');
+      });
     });
   }
 
@@ -124,7 +128,15 @@ module.exports = (io) => {
     .filter((el1, i, arr) => arr.findIndex(el2 => el2.type === el1.type) === i)
     .map(el => el.type));
 
-  const handleWIoTPResponse = (error, response, body, resolve, reject, successMessage) => {
+  // Get device types from neededDeviceTypes that are not in existingDeviceTypes
+  const getDeviceTypesToBeCreated = (existingDeviceTypes, neededDeviceTypes) => Promise.resolve(neededDeviceTypes
+    .filter(ndt => !existingDeviceTypes.find(edt => edt === ndt)));
+
+  // Get devices from neededDevices that are not in existingDevices
+  const getDevicesToBeCreated = (existingDevices, neededDevices) => Promise.resolve(neededDevices
+    .filter(nd => !existingDevices.find(ed => (ed.type === nd.type && ed.id === nd.id))));
+
+  const handleWIoTPResponse = (error, response, body, resolve, reject, successMessage, successData) => {
     const statusCode = (response && response.statusCode) || 404;
     const hasError = error || statusCode >= 400;
     const errorMessage = hasError && body && body.message ? body.message : WIOTP_API_ERROR_MESSAGES.get(statusCode);
@@ -135,7 +147,7 @@ module.exports = (io) => {
       reject({ message: outputMessage });
     }
     else {
-      resolve();
+      resolve(successData || null);
     }
   };
 
@@ -151,6 +163,17 @@ module.exports = (io) => {
     .auth(username, password, true);
   });
 
+  // List device types from WIoTP
+  const listDeviceTypesFromWIoTP = (iotApi, username, password) => new Promise((resolve, reject) => {
+    request.get({
+      url: `${iotApi}/device/types`,
+      rejectUnauthorized: false,
+    }, (error, response, body) => {
+      handleWIoTPResponse(error, response, body, resolve, reject, 'Device types retrieved successfully.',
+        body && JSON.parse(body).results.map(r => r.id));
+    })
+    .auth(username, password, true);
+  });
 
   // Delete device types from WIoTP using an array of unique device types
   const deleteDeviceTypesFromWIoTP = (deviceTypes, iotApi, username, password) => new Promise((resolve, reject) => {
@@ -159,7 +182,7 @@ module.exports = (io) => {
         url: `${iotApi}/device/types/${type}`,
         rejectUnauthorized: false,
       }, (error, response, body) => {
-        handleWIoTPResponse(error, response, body, deleteResolve, deleteReject, 'Device types deleted successfully.');
+        handleWIoTPResponse(error, response, body, deleteResolve, deleteReject, `Device type deleted successfully: ${type}`);
       })
       .auth(username, password, true);
     })))
@@ -167,28 +190,45 @@ module.exports = (io) => {
     .catch(reject);
   });
 
-
   // Create device types in WIoTP using an array of unique device types
   const createDeviceTypesInWIoTP = (deviceTypes, iotApi, username, password) => new Promise((resolve, reject) => {
-    Promise.all(deviceTypes.map(type => new Promise((postResolve, postReject) => {
-      request.post({
-        url: `${iotApi}/device/types`,
-        rejectUnauthorized: false,
-        json: true,
-        body: {
-          id: type,
-          description: type,
-          classId: 'Device',
-          deviceInfo: {},
-          metadata: {},
-        },
-      }, (error, response, body) => {
-        handleWIoTPResponse(error, response, body, postResolve, postReject, 'Device types created successfully.');
-      })
-      .auth(username, password, true);
-    })))
-    .then(resolve)
-    .catch(reject);
+    if (deviceTypes.length) {
+      Promise.all(deviceTypes.map(type => new Promise((postResolve, postReject) => {
+        request.post({
+          url: `${iotApi}/device/types`,
+          rejectUnauthorized: false,
+          json: true,
+          body: {
+            id: type,
+            description: type,
+            classId: 'Device',
+            deviceInfo: {},
+            metadata: {},
+          },
+        }, (error, response, body) => {
+          handleWIoTPResponse(error, response, body, postResolve, postReject, `Device type created successfully: ${type}`);
+        })
+        .auth(username, password, true);
+      })))
+      .then(resolve)
+      .catch(reject);
+    }
+    else {
+      console.log('No device types to create.');
+      resolve();
+    }
+  });
+
+  // List devices from WIoTP
+  const listDevicesFromWIoTP = (iotApi, username, password) => new Promise((resolve, reject) => {
+    request.get({
+      url: `${iotApi}/bulk/devices`,
+      rejectUnauthorized: false,
+    }, (error, response, body) => {
+      handleWIoTPResponse(error, response, body, resolve, reject, 'Devices retrieved successfully.',
+        body && JSON.parse(body).results.map(r => ({ type: r.typeId, id: r.deviceId })));
+    })
+    .auth(username, password, true);
   });
 
 
@@ -213,25 +253,31 @@ module.exports = (io) => {
 
   // Create devices in WIoTP using an array of unique devices
   const createDevicesInWIoTP = (devices, iotApi, username, password) => new Promise((resolve, reject) => {
-    const devicesBody = [];
-    devices.forEach(device => {
-      devicesBody.push({
-        typeId: device.type,
-        deviceId: device.id,
-        metadata: {},
-        authToken: DEVICE_PASSWORD,
+    if (devices.length) {
+      const devicesBody = [];
+      devices.forEach(device => {
+        devicesBody.push({
+          typeId: device.type,
+          deviceId: device.id,
+          metadata: {},
+          authToken: DEVICE_PASSWORD,
+        });
       });
-    });
 
-    request.post({
-      url: `${iotApi}/bulk/devices/add`,
-      rejectUnauthorized: false,
-      json: true,
-      body: devicesBody,
-    }, (error, response, body) => {
-      handleWIoTPResponse(error, response, body, resolve, reject, 'Devices created successfully.');
-    })
-    .auth(username, password, true);
+      request.post({
+        url: `${iotApi}/bulk/devices/add`,
+        rejectUnauthorized: false,
+        json: true,
+        body: devicesBody,
+      }, (error, response, body) => {
+        handleWIoTPResponse(error, response, body, resolve, reject, 'Devices created successfully.');
+      })
+      .auth(username, password, true);
+    }
+    else {
+      console.log('No devices to create.');
+      resolve();
+    }
   });
 
   // Connect devices to WIoTP using an array of unique devices
@@ -353,8 +399,9 @@ module.exports = (io) => {
       const DELETE_DATA = params.delete || false;
       const REBUILD_DATA = params.rebuild || false;
       const SIMULATE_DATA = params.simulate || false;
-      // Default action: rebuild WIoTP data and simulate
-      const REBUILD_AND_SIMULATE_DATA = !DELETE_DATA && !REBUILD_DATA && !SIMULATE_DATA;
+      const REBUILD_AND_SIMULATE_DATA = params.rebuildAndSimulate || false;
+      // Default action: build WIoTP data only if necessary and then simulate
+      const BUILD_AS_NEEDED_AND_SIMULATE_DATA = !DELETE_DATA && !REBUILD_DATA && !SIMULATE_DATA && !REBUILD_AND_SIMULATE_DATA;
 
       // Set a timestamp before running the simulator
       const startDate = new Date();
@@ -362,8 +409,10 @@ module.exports = (io) => {
 
       // Bind methods that depend on user input
       const checkOrg = () => checkWIoTPOrg(IOTP_API, USERNAME, PASSWORD);
+      const listDeviceTypes = () => listDeviceTypesFromWIoTP(IOTP_API, USERNAME, PASSWORD);
       const deleteDeviceTypes = (deviceTypes) => deleteDeviceTypesFromWIoTP(deviceTypes, IOTP_API, USERNAME, PASSWORD);
       const deleteDevices = (devices) => deleteDevicesFromWIoTP(devices, IOTP_API, USERNAME, PASSWORD);
+      const listDevices = () => listDevicesFromWIoTP(IOTP_API, USERNAME, PASSWORD);
       const createDeviceTypes = (deviceTypes) => createDeviceTypesInWIoTP(deviceTypes, IOTP_API, USERNAME, PASSWORD);
       const createDevices = (devices) => createDevicesInWIoTP(devices, IOTP_API, USERNAME, PASSWORD);
       const connectDevices = (devices) => connectDevicesInWIoTP(devices, ORG, MQTT_URL);
@@ -411,6 +460,32 @@ module.exports = (io) => {
           .then(() => Promise.resolve({ deviceTypes, devices, simulatedData }))
         );
 
+      // Helper function that extracts all the information needed from the csv file, then checks which
+      // devices and device types are missing in WIoTP, and then create only the ones that are missing.
+      // It also forwards the arrays of devices, device types and simulatedData for further steps in the simulation.
+      const buildWIoTPDevicesDataFromSimulatedDataFileAsNeeded = (csvFilePath) => checkOrg()
+        .then(() => extractDataFromSimulatedDataFile(csvFilePath))
+        .then(({ deviceTypes, devices, simulatedData }) => listDeviceTypes()
+          .then(existingDeviceTypes => listDevices()
+            .then(existingDevices => getDevicesToBeCreated(existingDevices, devices)
+              .then(devicesToBeCreated => getDeviceTypesToBeCreated(existingDeviceTypes, deviceTypes)
+                .then(deviceTypesToBeCreated => createDeviceTypes(deviceTypesToBeCreated))
+                .then(() => createDevices(devicesToBeCreated))
+                .then(() => Promise.resolve({ deviceTypes, devices, simulatedData }))
+              )
+            )
+          )
+        );
+
+      // Helper function that connects all devices, then starts publishing events, and when done, disconnect all devices.
+      const connectThenPublishThenDisconnect = (devices, simulatedData) => Promise.resolve(console.log('[INFO] Connecting devices ...'))
+        .then(() => connectDevices(devices))
+        .then((connectionsMap) => Promise.resolve(console.log('[INFO] Publishing events (check your devices in WIoTP to see the events) ...'))
+          .then(() => simulate(simulatedData, connectionsMap))
+          .then(() => console.log('[INFO] Disconnecting devices ...'))
+          .then(() => disconnectDevices(connectionsMap))
+        );
+
       return new Promise((resolve, reject) => {
         if (!ORG || !USERNAME || !PASSWORD || !HTTP_DOMAIN || !MQTT_DOMAIN) {
           return reject({ message: 'Missing one or more WIoTP connection settings.' });
@@ -433,16 +508,7 @@ module.exports = (io) => {
           return Promise.resolve(console.log('[INFO] Checking organization ...'))
             .then(() => checkOrg())
             .then(() => extractDataFromSimulatedDataFile(CSV_FILE_PATH))
-            .then(({ devices, simulatedData }) => getDevicesFromSimulatedData(simulatedData)
-              .then(() => console.log('[INFO] Connecting devices ...'))
-              .then(() => connectDevices(devices))
-              .then((connectionsMap) => Promise.resolve(console.log('[INFO] Publishing events (check your devices in WIoTP to see the events) ...'))
-                .then(() => simulate(simulatedData, connectionsMap))
-                .then(() => console.log('[INFO] Disconnecting devices ...'))
-                .then(() => disconnectDevices(connectionsMap))
-              )
-            )
-            .then(() => console.log(`Done in ${getExecutionTime(startDate)}`))
+            .then(({ devices, simulatedData }) => connectThenPublishThenDisconnect(devices, simulatedData))
             .then(() => resolveWithSuccess(`[SUCCESS] Simulation ended. ${numberOfPayloadsPublished} events were published in ${getExecutionTime(startDate)}`,
               resolve))
             .catch(e => rejectWithError(e, reject));
@@ -450,14 +516,15 @@ module.exports = (io) => {
         else if (REBUILD_AND_SIMULATE_DATA) {
           return Promise.resolve(console.log('[INFO] Simulation started. Creating devices and device types ...'))
             .then(() => rebuildWIoTPDevicesDataFromSimulatedDataFile(CSV_FILE_PATH))
-            .then(({ devices, simulatedData }) => Promise.resolve(console.log('[INFO] Connecting devices ...'))
-              .then(() => connectDevices(devices))
-              .then((connectionsMap) => Promise.resolve(console.log('[INFO] Publishing events (check your devices in WIoTP to see the events) ...'))
-                .then(() => simulate(simulatedData, connectionsMap))
-                .then(() => console.log('[INFO] Disconnecting devices ...'))
-                .then(() => disconnectDevices(connectionsMap))
-              )
-            )
+            .then(({ devices, simulatedData }) => connectThenPublishThenDisconnect(devices, simulatedData))
+            .then(() => resolveWithSuccess(`[SUCCESS] Simulation ended. ${numberOfPayloadsPublished} events were published in ${getExecutionTime(startDate)}`,
+              resolve))
+            .catch(e => rejectWithError(e, reject));
+        }
+        else if (BUILD_AS_NEEDED_AND_SIMULATE_DATA) {
+          return Promise.resolve(console.log('[INFO] Simulation started. Creating devices and device types if needed ...'))
+            .then(() => buildWIoTPDevicesDataFromSimulatedDataFileAsNeeded(CSV_FILE_PATH))
+            .then(({ devices, simulatedData }) => connectThenPublishThenDisconnect(devices, simulatedData))
             .then(() => resolveWithSuccess(`[SUCCESS] Simulation ended. ${numberOfPayloadsPublished} events were published in ${getExecutionTime(startDate)}`,
               resolve))
             .catch(e => rejectWithError(e, reject));
