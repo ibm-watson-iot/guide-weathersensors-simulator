@@ -87,7 +87,7 @@ class Dashboard extends Component {
     );
 
     const wiotpConnectionInfo = wiotpInfo || (isSimulatorRunning && org && { org, host: `${org}.${httpDomain}`, name: 'WIoTP' });
-    const headerLabel = <Label text={'Weather Sensor Simulator'} big centered />;
+    const headerLabel = <Label text={'Weather Sensors Simulator'} big centered />;
 
     const inputForm = wiotpConnectionInfo ? (
       <Form>
