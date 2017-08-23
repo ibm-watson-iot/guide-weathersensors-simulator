@@ -33,6 +33,13 @@ WIOTP_API_ERROR_MESSAGES.set(403, 'The authentication method is invalid or the A
 WIOTP_API_ERROR_MESSAGES.set(404, 'The organization does not exist');
 const SOCKET_MESSAGE_TYPE = 'MESSAGE';
 
+// Check if there is a bound WIoTP service
+const VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES || '{}');
+
+const VCAP_WIOTP_CONFIG = VCAP_SERVICES['iotf-service'] && VCAP_SERVICES['iotf-service'][0];
+const VCAP_WIOTP_CREDENTIALS = VCAP_WIOTP_CONFIG && VCAP_WIOTP_CONFIG.credentials;
+const VCAP_WIOTP_INFO = VCAP_WIOTP_CONFIG && { name: VCAP_WIOTP_CONFIG.name, org: VCAP_WIOTP_CREDENTIALS.org, host: VCAP_WIOTP_CREDENTIALS.http_host };
+
 module.exports = (io) => {
   // Listen to socket connections if io was passed
   // Then override console.log so that it also fires socket.emit()
@@ -381,17 +388,20 @@ module.exports = (io) => {
 
   return ({
     isRunning: () => running,
+    getWIoTPInfo: () => VCAP_WIOTP_INFO,
     stop: () => { running = false; },
     run: req => {
       running = true;
       const { body: { wiotp, params } } = req;
-      const ORG = wiotp.org;
-      const USERNAME = wiotp.apiKey;
-      const PASSWORD = wiotp.authToken;
+      const ORG = (VCAP_WIOTP_CREDENTIALS && VCAP_WIOTP_CREDENTIALS.org) || wiotp.org;
+      const USERNAME = (VCAP_WIOTP_CREDENTIALS && VCAP_WIOTP_CREDENTIALS.apiKey) || wiotp.apiKey;
+      const PASSWORD = (VCAP_WIOTP_CREDENTIALS && VCAP_WIOTP_CREDENTIALS.apiToken) || wiotp.authToken;
       const HTTP_DOMAIN = wiotp.httpDomain || DEFAULT_HTTP_DOMAIN;
       const MQTT_DOMAIN = wiotp.mqttDomain || DEFAULT_MQTT_DOMAIN;
-      const IOTP_API = `https://${ORG}.${HTTP_DOMAIN}/api/v0002`;
-      const MQTT_URL = `mqtts://${ORG}.${MQTT_DOMAIN}:8883`;
+      const HTTP_HOST = (VCAP_WIOTP_CREDENTIALS && VCAP_WIOTP_CREDENTIALS.http_host) || `${ORG}.${HTTP_DOMAIN}`;
+      const MQTT_HOST = (VCAP_WIOTP_CREDENTIALS && VCAP_WIOTP_CREDENTIALS.mqtt_host) || `${ORG}.${MQTT_DOMAIN}`;
+      const IOTP_API = `https://${HTTP_HOST}/api/v0002`;
+      const MQTT_URL = `mqtts://${MQTT_HOST}:8883`;
 
       // Simulator params
       const CSV_FILE_PATH = params.csvFilePath || DEFAULT_CSV_FILE_PATH;

@@ -1,0 +1,14 @@
+.bx--form-item {
+  &.centered {
+    align-self: center;
+  }
+}
+
+.bx--label {
+  &.big {
+    font-size: 1rem;
+  }
+  &.normal {
+    font-weight: normal;
+  }
+}

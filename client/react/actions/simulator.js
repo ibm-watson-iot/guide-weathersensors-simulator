@@ -1,4 +1,4 @@
-import { SET_IS_RUNNING, SET_ERROR, SET_PUBLISH_INTERVAL_DIVISOR } from '../constants/simulator';
+import { SET_IS_RUNNING, SET_WIOTP_INFO, SET_ERROR, SET_PUBLISH_INTERVAL_DIVISOR } from '../constants/simulator';
 import SimulatorService from '../services/simulator';
 
 
@@ -7,6 +7,10 @@ const setIsRunning = (isRunning) => ({
   isRunning,
 });
 
+const setWIoTPInfo = (wiotpInfo) => ({
+  type: SET_WIOTP_INFO,
+  wiotpInfo,
+});
 
 const setError = (message) => ({
   type: SET_ERROR,
@@ -39,6 +43,16 @@ export const updateSimulatorStatus = () => (dispatch) => {
   SimulatorService.isRunning()
   .then((response) => {
     dispatch(setIsRunning(response.isRunning));
+  })
+  .catch((e) => {
+    dispatch(setError(e.message));
+  });
+};
+
+export const updateWIoTPInfo = () => (dispatch) => {
+  SimulatorService.getWIoTPInfo()
+  .then((response) => {
+    dispatch(setWIoTPInfo(response.wiotpInfo));
   })
   .catch((e) => {
     dispatch(setError(e.message));

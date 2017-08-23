@@ -1,7 +1,8 @@
-import { SET_IS_RUNNING, SET_ERROR, SET_PUBLISH_INTERVAL_DIVISOR, DEFAULT_PUBLISH_INTERVAL_DIVISOR } from '../constants/simulator';
+import { SET_IS_RUNNING, SET_WIOTP_INFO, SET_ERROR, SET_PUBLISH_INTERVAL_DIVISOR, DEFAULT_PUBLISH_INTERVAL_DIVISOR } from '../constants/simulator';
 
 const initialState = {
   isRunning: false,
+  wiotpInfo: undefined,
   error: '',
   publishIntervalDivisor: DEFAULT_PUBLISH_INTERVAL_DIVISOR,
 };
@@ -11,6 +12,9 @@ export const simulator = (state = initialState, action) => {
 
     case SET_IS_RUNNING:
       return Object.assign({}, state, { error: '', isRunning: action.isRunning });
+
+    case SET_WIOTP_INFO:
+      return Object.assign({}, state, { wiotpInfo: action.wiotpInfo });
 
     case SET_ERROR:
       return Object.assign({}, state, { error: action.message });

@@ -13,6 +13,8 @@ module.exports = (io, middlewares) => {
 
   router.get('/status', (req, res) => res.send({ isRunning: simulator.isRunning() }));
 
+  router.get('/wiotpinfo', (req, res) => res.send({ wiotpInfo: simulator.getWIoTPInfo() }));
+
   router.post('/run', (req, res) => {
     // Return from the POST command regardless of the primise result
     // because the logs will be sent to the UI via socket

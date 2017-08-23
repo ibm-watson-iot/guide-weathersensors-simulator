@@ -1,5 +1,6 @@
 // Actions
 export const SET_IS_RUNNING = 'SET_IS_RUNNING';
+export const SET_WIOTP_INFO = 'SET_WIOTP_INFO';
 export const SET_ERROR = 'SET_ERROR';
 export const SET_PUBLISH_INTERVAL_DIVISOR = 'SET_PUBLISH_INTERVAL_DIVISOR';
 

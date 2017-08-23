@@ -1,0 +1,11 @@
+.bx--form-item.centered {
+  -ms-flex-item-align: center;
+      align-self: center; }
+
+.bx--label.big {
+  font-size: 1rem; }
+
+.bx--label.normal {
+  font-weight: normal; }
+
+/*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImxhYmVsLmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLDRCQUFtQjtNQUFuQixtQkFBbUIsRUFBRTs7QUFFdkI7RUFDRSxnQkFBZ0IsRUFBRTs7QUFFcEI7RUFDRSxvQkFBb0IsRUFBRSIsImZpbGUiOiJjb21wb25lbnRzL2xhYmVsLmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5ieC0tZm9ybS1pdGVtLmNlbnRlcmVkIHtcbiAgYWxpZ24tc2VsZjogY2VudGVyOyB9XG5cbi5ieC0tbGFiZWwuYmlnIHtcbiAgZm9udC1zaXplOiAxcmVtOyB9XG5cbi5ieC0tbGFiZWwubm9ybWFsIHtcbiAgZm9udC13ZWlnaHQ6IG5vcm1hbDsgfVxuIl19 */
