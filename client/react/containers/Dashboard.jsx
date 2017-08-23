@@ -5,6 +5,9 @@ import { connect } from 'react-redux';
 // Utils
 import { getUrlQueryParameters } from '../util/util';
 
+// constants
+import { DEFAULT_HTTP_DOMAIN } from '../constants/simulator';
+
 // components
 import Page from '../components/Page';
 import Form from '../components/Form';
@@ -17,7 +20,7 @@ import Notification from '../components/Notification';
 import SimulatorFrame from '../components/SimulatorFrame';
 
 // action creators
-import { updateSimulatorStatus, updateWIoTPInfo, runSimulator, clearSuccess, clearError, setPublishIntervalDivisor } from '../actions/simulator';
+import { updateSimulatorStatus, updateWIoTPInfo, runSimulator, clearSuccess, clearError, setPublishIntervalDivisor, setTestEnv } from '../actions/simulator';
 import { clearLog } from '../actions/simulatorLog';
 
 class Dashboard extends Component {
@@ -31,21 +34,24 @@ class Dashboard extends Component {
   }
 
   componentWillMount() {
-    const { dispatchUpdateSimulatorStatus, dispatchUpdateWIoTPInfo, dispatchSetPublishIntervalDivisor } = this.props;
+    const { dispatchUpdateSimulatorStatus, dispatchUpdateWIoTPInfo, dispatchSetPublishIntervalDivisor, dispatchSetTestEnv } = this.props;
     // If simulator is running, set the isRunning state flag.
     dispatchUpdateWIoTPInfo();
     dispatchUpdateSimulatorStatus();
     setInterval(dispatchUpdateSimulatorStatus, 5000);
     // If divisor was passed, set the value to the state.
-    const { divisor } = getUrlQueryParameters();
+    const { divisor, testenv } = getUrlQueryParameters();
     const publishIntervalDivisor = parseFloat(divisor);
     if (publishIntervalDivisor) {
       dispatchSetPublishIntervalDivisor(publishIntervalDivisor);
     }
+    if (testenv) {
+      dispatchSetTestEnv(testenv);
+    }
   }
 
   render() {
-    const { publishIntervalDivisor, isSimulatorRunning, wiotpInfo, logArray, lastRelevantLog,
+    const { publishIntervalDivisor, testEnv, isSimulatorRunning, wiotpInfo, logArray, lastRelevantLog,
       dispatchRunSimulator, dispatchClearLog } = this.props;
     const { org, apiKey, authToken } = this.state;
     const inputsMissing = (!org || !apiKey || !authToken) && !wiotpInfo;
@@ -55,6 +61,9 @@ class Dashboard extends Component {
     const notificationType = lastRelevantLog.type;
     const notificationMessage = lastRelevantLog.message || (isSimulatorRunning ? 'Simulator running ...' : defaultNotificationMessage);
     const isSimulatorButtonDisabled = isSimulatorRunning || inputsMissing;
+    const httpDomain = testEnv ? `${testEnv}.test.${DEFAULT_HTTP_DOMAIN}` : DEFAULT_HTTP_DOMAIN;
+    const mqttDomain = testEnv ? `messaging.${testEnv}.test.${DEFAULT_HTTP_DOMAIN}` : `messaging.${DEFAULT_HTTP_DOMAIN}`;
+
     const runSimulatorButton = (
       <ButtonGroup
         buttons={[{
@@ -62,7 +71,7 @@ class Dashboard extends Component {
           onClick: () => {
             dispatchClearLog();
             dispatchRunSimulator({
-              wiotp: { org, apiKey, authToken },
+              wiotp: { org, apiKey, authToken, httpDomain, mqttDomain },
               params: { publishIntervalDivisor },
             });
           },
@@ -72,9 +81,9 @@ class Dashboard extends Component {
       />
     );
 
-    const wiotpConnectionInfo = wiotpInfo || (isSimulatorRunning && org && { org, host: `${org}.internetofthings.ibmcloud.com`, name: 'WIoTP' });
-
+    const wiotpConnectionInfo = wiotpInfo || (isSimulatorRunning && org && { org, host: `${org}.${httpDomain}`, name: 'WIoTP' });
     const headerLabel = <Label text={'Weather Sensor Simulator'} big centered />;
+
     const inputForm = wiotpConnectionInfo ? (
       <Form>
         {headerLabel}
@@ -119,7 +128,7 @@ class Dashboard extends Component {
             onClick: () => {
               dispatchClearLog();
               dispatchRunSimulator({
-                wiotp: { org, apiKey, authToken },
+                wiotp: { org, apiKey, authToken, httpDomain, mqttDomain },
                 params: { delete: true },
               });
             },
@@ -148,6 +157,7 @@ class Dashboard extends Component {
 
 const mapStateToProps = (state) => ({
   publishIntervalDivisor: state.simulator.publishIntervalDivisor,
+  testEnv: state.simulator.testEnv,
   isSimulatorRunning: state.simulator.isRunning,
   wiotpInfo: state.simulator.wiotpInfo,
   success: state.simulator.success,
@@ -158,6 +168,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchSetPublishIntervalDivisor: (divisor) => dispatch(setPublishIntervalDivisor(divisor)),
+  dispatchSetTestEnv: (testEnv) => dispatch(setTestEnv(testEnv)),
   dispatchUpdateSimulatorStatus: () => dispatch(updateSimulatorStatus()),
   dispatchUpdateWIoTPInfo: () => dispatch(updateWIoTPInfo()),
   dispatchRunSimulator: (config) => dispatch(runSimulator(config)),
