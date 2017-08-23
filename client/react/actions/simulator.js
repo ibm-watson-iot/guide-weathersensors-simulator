@@ -1,4 +1,4 @@
-import { SET_IS_RUNNING, SET_WIOTP_INFO, SET_ERROR, SET_PUBLISH_INTERVAL_DIVISOR, SET_TEST_ENV } from '../constants/simulator';
+import { SET_IS_RUNNING, SET_WIOTP_INFO, SET_ERROR, SET_PUBLISH_INTERVAL_DIVISOR, SET_TEST_ENV, SET_DOMAIN } from '../constants/simulator';
 import SimulatorService from '../services/simulator';
 
 
@@ -25,6 +25,11 @@ export const setPublishIntervalDivisor = (publishIntervalDivisor) => ({
 export const setTestEnv = (testEnv) => ({
   type: SET_TEST_ENV,
   testEnv,
+});
+
+export const setDomain = (domain) => ({
+  type: SET_DOMAIN,
+  domain,
 });
 
 export const clearError = () => (dispatch) => dispatch(setError(''));

@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { getUrlQueryParameters } from '../util/util';
 
 // constants
-import { DEFAULT_HTTP_DOMAIN } from '../constants/simulator';
+import { DEFAULT_DOMAIN } from '../constants/simulator';
 
 // components
 import Page from '../components/Page';
@@ -20,7 +20,8 @@ import Notification from '../components/Notification';
 import SimulatorFrame from '../components/SimulatorFrame';
 
 // action creators
-import { updateSimulatorStatus, updateWIoTPInfo, runSimulator, clearSuccess, clearError, setPublishIntervalDivisor, setTestEnv } from '../actions/simulator';
+import { updateSimulatorStatus, updateWIoTPInfo, runSimulator, clearSuccess, clearError,
+  setPublishIntervalDivisor, setTestEnv, setDomain } from '../actions/simulator';
 import { clearLog } from '../actions/simulatorLog';
 
 class Dashboard extends Component {
@@ -34,13 +35,13 @@ class Dashboard extends Component {
   }
 
   componentWillMount() {
-    const { dispatchUpdateSimulatorStatus, dispatchUpdateWIoTPInfo, dispatchSetPublishIntervalDivisor, dispatchSetTestEnv } = this.props;
+    const { dispatchUpdateSimulatorStatus, dispatchUpdateWIoTPInfo, dispatchSetPublishIntervalDivisor, dispatchSetTestEnv, dispatchSetDomain } = this.props;
     // If simulator is running, set the isRunning state flag.
     dispatchUpdateWIoTPInfo();
     dispatchUpdateSimulatorStatus();
     setInterval(dispatchUpdateSimulatorStatus, 5000);
-    // If divisor was passed, set the value to the state.
-    const { divisor, testenv } = getUrlQueryParameters();
+    // If query params were passed, set their values to the state
+    const { divisor, testenv, domain } = getUrlQueryParameters();
     const publishIntervalDivisor = parseFloat(divisor);
     if (publishIntervalDivisor) {
       dispatchSetPublishIntervalDivisor(publishIntervalDivisor);
@@ -48,10 +49,13 @@ class Dashboard extends Component {
     if (testenv) {
       dispatchSetTestEnv(testenv);
     }
+    if (domain) {
+      dispatchSetDomain(domain);
+    }
   }
 
   render() {
-    const { publishIntervalDivisor, testEnv, isSimulatorRunning, wiotpInfo, logArray, lastRelevantLog,
+    const { publishIntervalDivisor, testEnv, domain, isSimulatorRunning, wiotpInfo, logArray, lastRelevantLog,
       dispatchRunSimulator, dispatchClearLog } = this.props;
     const { org, apiKey, authToken } = this.state;
     const inputsMissing = (!org || !apiKey || !authToken) && !wiotpInfo;
@@ -61,8 +65,9 @@ class Dashboard extends Component {
     const notificationType = lastRelevantLog.type;
     const notificationMessage = lastRelevantLog.message || (isSimulatorRunning ? 'Simulator running ...' : defaultNotificationMessage);
     const isSimulatorButtonDisabled = isSimulatorRunning || inputsMissing;
-    const httpDomain = testEnv ? `${testEnv}.test.${DEFAULT_HTTP_DOMAIN}` : DEFAULT_HTTP_DOMAIN;
-    const mqttDomain = testEnv ? `messaging.${testEnv}.test.${DEFAULT_HTTP_DOMAIN}` : `messaging.${DEFAULT_HTTP_DOMAIN}`;
+    const baseDomain = domain || DEFAULT_DOMAIN;
+    const httpDomain = testEnv ? `${testEnv}.test.${baseDomain}` : baseDomain;
+    const mqttDomain = testEnv ? `messaging.${testEnv}.test.${baseDomain}` : `messaging.${baseDomain}`;
 
     const runSimulatorButton = (
       <ButtonGroup
@@ -158,10 +163,9 @@ class Dashboard extends Component {
 const mapStateToProps = (state) => ({
   publishIntervalDivisor: state.simulator.publishIntervalDivisor,
   testEnv: state.simulator.testEnv,
+  domain: state.simulator.domain,
   isSimulatorRunning: state.simulator.isRunning,
   wiotpInfo: state.simulator.wiotpInfo,
-  success: state.simulator.success,
-  error: state.simulator.error,
   logArray: state.simulatorLog.completeLog,
   lastRelevantLog: state.simulatorLog.lastRelevantLog,
 });
@@ -169,6 +173,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   dispatchSetPublishIntervalDivisor: (divisor) => dispatch(setPublishIntervalDivisor(divisor)),
   dispatchSetTestEnv: (testEnv) => dispatch(setTestEnv(testEnv)),
+  dispatchSetDomain: (domain) => dispatch(setDomain(domain)),
   dispatchUpdateSimulatorStatus: () => dispatch(updateSimulatorStatus()),
   dispatchUpdateWIoTPInfo: () => dispatch(updateWIoTPInfo()),
   dispatchRunSimulator: (config) => dispatch(runSimulator(config)),
