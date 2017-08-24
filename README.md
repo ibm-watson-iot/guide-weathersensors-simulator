@@ -59,9 +59,10 @@ To obtain your IoTP credential, click on Apps option in the IoT platform left na
 <img src="./images/simulator_running_unbound.png">
 
 The information box at the top will display the current status of simulation. When the simulation is done, you should see a success message.  
-If you want to delete the devices and device types created by the simulator from the WIoTP service, just click on Delete simulated devices.
 
 <img src="./images/simulator_finished_unbound.png">
+
+If you want to delete the devices and device types created by the simulator from the WIoTP service, just click on Delete simulated devices.
 
 ### Troubleshooting
 
