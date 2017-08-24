@@ -3,20 +3,35 @@
 This sample application is included as a component in a set of guides that step through the basics of integrating IBM Watson IoT Platform with IBM Watson Analytics and IBM Data Science Experience. For more information about the guides, see the [Watson IoT Platform documentation](https://console.bluemix.net/docs/services/IoT/getting_started/getting-started-iot-overview.html).
 
 # Weather sensors simulator
-<img src="./images/simulator_running.png">
+<img src="./images/simulator_finished_unbound.png">
 
 A web app that simulates several weather sensors in the Haifa region that send data to IBM Watson IoT Platform.
 
 ## Run your own copy of the web application
 
-### Deploy through Bluemix devOps
+### Deploy through Bluemix devOps along with a new instance of IBM Watson IoT Platform
 
 1. Click on the button below and follow the instructions in Bluemix to deploy and view your web app.
 
-[![Create toolchain](https://bluemix.net/devops/graphics/create_toolchain_button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-watson-iot/guide-weathersensors-simulator)
-
 [![Create toolchain](https://bluemix.net/devops/graphics/create_toolchain_button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-watson-iot/guide-weathersensors-simulator&branch=bindwiotp)  
-(Experimental: Deploy app and bind with a new Watson IoT Platform service)
+
+2. Click View app to launch your web app once the pipeline has deployed the app. (The deployment takes a few minutes. You can check the status by clicking the Delivery pipeline tile.) 
+
+<img src="./images/bluemix_deploy.png">
+
+3. A new instance of the Watson IoT Platform service will be created in your Bluemix account. This service will be bound to the Weather Sensors Simulator app. All you need to do is click on Run Simulator.
+
+<img src="./images/simulator_running_bound.png">
+
+4. The simulation log will be displayed on the panel to the right. At any time during the simulation you can click on the link to your Watson IoT Platform service so that you can see the devices and device types that the simulator app has registered.
+
+If you want to delete the devices and device types created by the simulator from your WIoTP service, just click on Delete simulated devices.
+
+### Deploy a standalone version of the simulator through Bluemix devOps and use your existing instance of IBM Watson IoT Platform
+
+1. Click on the button below and follow the instructions in Bluemix to deploy and view your web app.
+
+[![Create toolchain](https://bluemix.net/devops/graphics/create_toolchain_button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-watson-iot/guide-weathersensors-simulator)  
 
 2. Click View app to launch your web app once the pipeline has deployed the app. (The deployment takes a few minutes. You can check the status by clicking the Delivery pipeline tile.) 
 
@@ -32,13 +47,15 @@ To obtain your IoTP credential, click on Apps option in the IoT platform left na
 
 <img src="./images/wiotp_api_key_token.png">
 
-Back to the simulator web app, fill in the fields (org, API Key and authentication token), then click on Run Simulator.
+Back to the simulator web app, fill in the fields (org, API Key and authentication token), then click on Run Simulator. At any time during the simulation you can click on the WIoTP link so that you can see the devices and device types that the simulator app has registered.
+
+<img src="./images/simulator_running_unbound.png">
 
 4. The information box at the top will display the current status of simulation. When the simulation is done, you should see a success message.
 
-If you want to delete the devices and device types created by the simulator from your WIoTP service, just click on Delete simulated devices.
+If you want to delete the devices and device types created by the simulator from the WIoTP service, just click on Delete simulated devices.
 
-<img src="./images/simulator_finished.png">
+<img src="./images/simulator_finished_unbound.png">
 
 ### Troubleshooting
 
