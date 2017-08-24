@@ -7,7 +7,9 @@ This sample application is included as a component in a set of guides that step 
 
 A web app that simulates several weather sensors in the Haifa region that send data to IBM Watson IoT Platform.
 
+
 ## Run your own copy of the web application
+
 
 ### Deploy through Bluemix devOps along with a new instance of IBM Watson IoT Platform
 
@@ -26,6 +28,7 @@ A web app that simulates several weather sensors in the Haifa region that send d
 4. The simulation log will be displayed on the panel to the right. At any time during the simulation you can click on the link to your Watson IoT Platform service so that you can see the devices and device types that the simulator app has registered.
 
 If you want to delete the devices and device types created by the simulator from your WIoTP service, just click on Delete simulated devices.
+
 
 ### Deploy a standalone version of the simulator through Bluemix devOps and use your existing instance of IBM Watson IoT Platform
 
@@ -47,12 +50,15 @@ To obtain your IoTP credential, click on Apps option in the IoT platform left na
 
 <img src="./images/wiotp_api_key_token.png">
 
-Back to the simulator web app, fill in the fields (org, API Key and authentication token), then click on Run Simulator. At any time during the simulation you can click on the WIoTP link so that you can see the devices and device types that the simulator app has registered.
+4. Back to the simulator web app, fill in the fields (org, API Key and authentication token).
+
+<img src="./images/simulator_idle_unbound.png">
+
+5. Click on Run Simulator. The simulation log will be displayed on the panel to the right. At any time during the simulation you can click on the WIoTP link so that you can see the devices and device types that the simulator app has registered.
 
 <img src="./images/simulator_running_unbound.png">
 
-4. The information box at the top will display the current status of simulation. When the simulation is done, you should see a success message.
-
+The information box at the top will display the current status of simulation. When the simulation is done, you should see a success message.  
 If you want to delete the devices and device types created by the simulator from the WIoTP service, just click on Delete simulated devices.
 
 <img src="./images/simulator_finished_unbound.png">
