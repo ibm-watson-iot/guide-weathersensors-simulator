@@ -11,7 +11,7 @@ A web app that simulates several weather sensors in the Haifa region that send d
 ## Run your own copy of the web application
 
 
-### Deploy through Bluemix devOps along with a new instance of IBM Watson IoT Platform
+### Deploy through Bluemix devOps along with a new instance of IBM Watson IoT Platform and Cloudant Database
 
 1. Click on the button below and follow the instructions in Bluemix to deploy and view your web app.
 
