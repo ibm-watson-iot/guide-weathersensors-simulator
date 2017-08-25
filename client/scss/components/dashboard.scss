@@ -4,11 +4,11 @@
 }
 
 .input-form-container {
-  min-width: 330px;
+  flex: 1;
+  min-width: 400px;
   margin-right: 1rem;
 }
 
 .log-form-container {
-  flex-grow: 1;
-  min-width: 410px;
+  flex: 3;
 }

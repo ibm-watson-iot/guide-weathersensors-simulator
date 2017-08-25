@@ -40,6 +40,12 @@ const VCAP_WIOTP_CONFIG = VCAP_SERVICES['iotf-service'] && VCAP_SERVICES['iotf-s
 const VCAP_WIOTP_CREDENTIALS = VCAP_WIOTP_CONFIG && VCAP_WIOTP_CONFIG.credentials;
 const VCAP_WIOTP_INFO = VCAP_WIOTP_CONFIG && { name: VCAP_WIOTP_CONFIG.name, org: VCAP_WIOTP_CREDENTIALS.org, host: VCAP_WIOTP_CREDENTIALS.http_host };
 
+const VCAP_CLOUDANT_CONFIG = VCAP_SERVICES.cloudantNoSQLDB && VCAP_SERVICES.cloudantNoSQLDB[0];
+const VCAP_CLOUDANT_CREDENTIALS = VCAP_CLOUDANT_CONFIG && VCAP_CLOUDANT_CONFIG.credentials;
+const VCAP_CLOUDANT_INFO = VCAP_CLOUDANT_CONFIG && {
+  name: VCAP_CLOUDANT_CONFIG.name, url: VCAP_CLOUDANT_CREDENTIALS.url, host: VCAP_CLOUDANT_CREDENTIALS.host,
+};
+
 module.exports = (io) => {
   // Listen to socket connections if io was passed
   // Then override console.log so that it also fires socket.emit()
@@ -389,6 +395,7 @@ module.exports = (io) => {
   return ({
     isRunning: () => running,
     getWIoTPInfo: () => VCAP_WIOTP_INFO,
+    getCloudantInfo: () => VCAP_CLOUDANT_INFO,
     stop: () => { running = false; },
     run: req => {
       running = true;

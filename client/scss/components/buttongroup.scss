@@ -5,4 +5,7 @@
   &.centered {
     align-self: center;
   }
+  &:last-child {
+    flex: 0;
+  }
 }
