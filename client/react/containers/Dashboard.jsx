@@ -20,7 +20,7 @@ import Notification from '../components/Notification';
 import SimulatorFrame from '../components/SimulatorFrame';
 
 // action creators
-import { updateSimulatorStatus, updateWIoTPInfo, runSimulator, clearSuccess, clearError,
+import { updateSimulatorStatus, updateWIoTPInfo, updateCloudantInfo, runSimulator, clearSuccess, clearError,
   setPublishIntervalDivisor, setTestEnv, setDomain } from '../actions/simulator';
 import { clearLog } from '../actions/simulatorLog';
 
@@ -35,9 +35,11 @@ class Dashboard extends Component {
   }
 
   componentWillMount() {
-    const { dispatchUpdateSimulatorStatus, dispatchUpdateWIoTPInfo, dispatchSetPublishIntervalDivisor, dispatchSetTestEnv, dispatchSetDomain } = this.props;
+    const { dispatchUpdateSimulatorStatus, dispatchUpdateWIoTPInfo, dispatchUpdateCloudantInfo,
+      dispatchSetPublishIntervalDivisor, dispatchSetTestEnv, dispatchSetDomain } = this.props;
     // If simulator is running, set the isRunning state flag.
     dispatchUpdateWIoTPInfo();
+    dispatchUpdateCloudantInfo();
     dispatchUpdateSimulatorStatus();
     setInterval(dispatchUpdateSimulatorStatus, 5000);
     // If query params were passed, set their values to the state
@@ -55,7 +57,7 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { publishIntervalDivisor, testEnv, domain, isSimulatorRunning, wiotpInfo, logArray, lastRelevantLog,
+    const { publishIntervalDivisor, testEnv, domain, isSimulatorRunning, wiotpInfo, cloudantInfo, logArray, lastRelevantLog,
       dispatchRunSimulator, dispatchClearLog } = this.props;
     const { org, apiKey, authToken } = this.state;
     const inputsMissing = (!org || !apiKey || !authToken) && !wiotpInfo;
@@ -86,16 +88,40 @@ class Dashboard extends Component {
       />
     );
 
-    const wiotpConnectionInfo = wiotpInfo || (isSimulatorRunning && org && { org, host: `${org}.${httpDomain}`, name: 'WIoTP' });
+    const wiotpConnectionInfo = wiotpInfo || (isSimulatorRunning && org && { org, host: `${org}.${httpDomain}` });
     const headerLabel = <Label text={'Weather Sensors Simulator'} big centered />;
+
+    const wiotpLinkMessage = (cloudantInfo && !isSimulatorRunning) ?
+      'If you haven\'t yet configured Cloudant connector, do so before running the simulator.'
+      : 'Check your devices in WIoTP by clicking on the link below';
+
+    const wiotpLink = (cloudantInfo && !isSimulatorRunning) ? (
+      <Link
+        href={`http://${wiotpConnectionInfo.host}/dashboard/#/extensions`}
+        label={`Configure Cloudant connector (${wiotpConnectionInfo.name})`}
+        centered
+      />
+    ) : (
+      <Link
+        href={`http://${wiotpConnectionInfo.host}/dashboard/#/devices/browse`}
+        label={`Launch WIoTP Dashboard${wiotpConnectionInfo.name ? ` (${wiotpConnectionInfo.name})` : ''}`}
+        centered
+      />
+    );
 
     const inputForm = wiotpConnectionInfo ? (
       <Form>
         {headerLabel}
-        <Label text={'Connected to:'} centered />
-        <Link href={`http://${wiotpConnectionInfo.host}/dashboard/#/devices/browse`} label={wiotpConnectionInfo.name} centered />
-        <Label text={`Org: ${wiotpConnectionInfo.org}`} centered normal />
-        <div style={{ height: '130px' }} />
+        <Label text={wiotpLinkMessage} centered normal />
+        {wiotpLink}
+        {org ? <Label text={`Org: ${wiotpConnectionInfo.org}`} centered normal /> : null}
+        {cloudantInfo ? (
+          <Link
+            href={`http://${cloudantInfo.host}/dashboard.html`}
+            label={`Launch Cloudant Dashboard (${cloudantInfo.name})`}
+            centered
+          />) : null
+        }
         {runSimulatorButton}
       </Form>
     ) : (
@@ -166,6 +192,7 @@ const mapStateToProps = (state) => ({
   domain: state.simulator.domain,
   isSimulatorRunning: state.simulator.isRunning,
   wiotpInfo: state.simulator.wiotpInfo,
+  cloudantInfo: state.simulator.cloudantInfo,
   logArray: state.simulatorLog.completeLog,
   lastRelevantLog: state.simulatorLog.lastRelevantLog,
 });
@@ -176,6 +203,7 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchSetDomain: (domain) => dispatch(setDomain(domain)),
   dispatchUpdateSimulatorStatus: () => dispatch(updateSimulatorStatus()),
   dispatchUpdateWIoTPInfo: () => dispatch(updateWIoTPInfo()),
+  dispatchUpdateCloudantInfo: () => dispatch(updateCloudantInfo()),
   dispatchRunSimulator: (config) => dispatch(runSimulator(config)),
   dispatchClearLog: () => dispatch(clearLog()),
   dispatchClearSuccess: () => dispatch(clearSuccess()),
