@@ -30,7 +30,7 @@ A web app that simulates several weather sensors in the Haifa region that send d
 If you want to delete the devices and device types created by the simulator from your WIoTP service, just click on Delete simulated devices.
 
 
-### Deploy a standalone version of the simulator through Bluemix devOps and use your existing instance of IBM Watson IoT Platform
+### Deploy a standalone version of the simulator through Bluemix devOps and use an existing instance of IBM Watson IoT Platform
 
 1. Click on the button below and follow the instructions in Bluemix to deploy and view your web app.
 
