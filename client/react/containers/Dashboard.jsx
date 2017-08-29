@@ -15,7 +15,9 @@ import Label from '../components/Label';
 import Link from '../components/Link';
 import InputText from '../components/InputText';
 import ButtonGroup from '../components/ButtonGroup';
+import CopyButton from '../components/CopyButton';
 import LogBox from '../components/LogBox';
+import Modal from '../components/Modal';
 import Notification from '../components/Notification';
 import SimulatorFrame from '../components/SimulatorFrame';
 
@@ -31,6 +33,7 @@ class Dashboard extends Component {
       org: '',
       apiKey: '',
       authToken: '',
+      isModalVisible: false,
     };
   }
 
@@ -59,7 +62,7 @@ class Dashboard extends Component {
   render() {
     const { publishIntervalDivisor, testEnv, domain, isSimulatorRunning, wiotpInfo, cloudantInfo, logArray, lastRelevantLog,
       dispatchRunSimulator, dispatchClearLog } = this.props;
-    const { org, apiKey, authToken } = this.state;
+    const { org, apiKey, authToken, isModalVisible } = this.state;
     const inputsMissing = (!org || !apiKey || !authToken) && !wiotpInfo;
     const defaultNotificationMessage = inputsMissing
         ? 'Enter WIoTP org and credentials then click on Run Simulator.'
@@ -89,39 +92,75 @@ class Dashboard extends Component {
     );
 
     const wiotpConnectionInfo = wiotpInfo || (isSimulatorRunning && org && { org, host: `${org}.${httpDomain}` });
+
     const headerLabel = <Label text={'Weather Sensors Simulator'} big centered />;
 
-    const wiotpLinkMessage = (cloudantInfo && !isSimulatorRunning) ?
-      'If you haven\'t yet configured Cloudant connector, do so before running the simulator.'
-      : 'Check your devices in WIoTP by clicking on the link below';
+    const wiotpLinkLabel = (cloudantInfo && !isSimulatorRunning) ?
+      <Label text={'If you haven\'t yet configured Cloudant connector, do so before running the simulator.'} centered normal />
+      : <Label text={'Check your devices in WIoTP by clicking on the link below'} centered normal />;
 
     const wiotpLink = (cloudantInfo && !isSimulatorRunning) ? (
       <Link
         href={`http://${wiotpConnectionInfo.host}/dashboard/#/extensions`}
-        label={`Configure Cloudant connector (${wiotpConnectionInfo.name})`}
+        label={'Configure Cloudant connector'}
         centered
       />
     ) : (
       <Link
         href={`http://${wiotpConnectionInfo.host}/dashboard/#/devices/browse`}
-        label={`Launch WIoTP Dashboard${wiotpConnectionInfo.name ? ` (${wiotpConnectionInfo.name})` : ''}`}
+        label={'Launch WIoTP Dashboard'}
         centered
       />
     );
 
+    // const wiotpServiceNameLabel = wiotpConnectionInfo && wiotpConnectionInfo.name ?
+    //   <Label text={`Service name: ${wiotpConnectionInfo.name}`} centered normal />
+    //   : null;
+
+    const wiotpServiceOrgLabel = wiotpConnectionInfo && wiotpConnectionInfo.org ?
+      <Label text={`Org: ${wiotpConnectionInfo.org}`} centered normal />
+      : null;
+
+    const cloudantLink = cloudantInfo ? (
+      <Link
+        label={'Cloudant Dashboard ...'}
+        onClick={() => this.setState({ isModalVisible: true })}
+        centered
+      />
+    ) : null;
+
+    // const cloudantServiceNameLabel = cloudantInfo ? <Label text={`Service Name: ${cloudantInfo.name}`} centered normal /> : null;
+
+    const cloudantLinkModal = cloudantInfo ? (
+      <Modal
+        title={'Cloudant Service'}
+        content={(
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <Label text={'Copy Cloudant password to clipboard and open Cloudant dashboard.'} centered normal />
+            <div className="bx--form-item" style={{ display: 'flex', flexDirection: 'row' }}>
+              <Label text={cloudantInfo.password} centered normal />
+              <CopyButton textToCopy={cloudantInfo.password} />
+            </div>
+            <Link
+              href={`http://${cloudantInfo.host}/dashboard.html`}
+              label={'Launch Cloudant Dashboard'}
+              centered
+            />
+          </div>
+        )}
+        isVisible={isModalVisible}
+        onClose={() => this.setState({ isModalVisible: false })}
+      />
+    ) : null;
+
+
     const inputForm = wiotpConnectionInfo ? (
       <Form>
         {headerLabel}
-        <Label text={wiotpLinkMessage} centered normal />
+        {wiotpLinkLabel}
         {wiotpLink}
-        {org ? <Label text={`Org: ${wiotpConnectionInfo.org}`} centered normal /> : null}
-        {cloudantInfo ? (
-          <Link
-            href={`http://${cloudantInfo.host}/dashboard.html`}
-            label={`Launch Cloudant Dashboard (${cloudantInfo.name})`}
-            centered
-          />) : null
-        }
+        {wiotpServiceOrgLabel}
+        {cloudantLink}
         {runSimulatorButton}
       </Form>
     ) : (
@@ -176,6 +215,7 @@ class Dashboard extends Component {
 
     return (
       <Page>
+        {cloudantLinkModal}
         {<Notification type={notificationType} message={notificationMessage} />}
         <SimulatorFrame
           inputForm={inputForm}
