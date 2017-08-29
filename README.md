@@ -10,9 +10,9 @@ A web app that simulates several weather sensors in the Haifa region that send d
 
 ## Run your own copy of the web application
 
-[## Option A: Deploy the simulator along with a new instance of WIoTP and Cloudant](### Deploy through Bluemix devOps along with a new instance of IBM Watson IoT Platform and Cloudant Database)
+[## Option A: Deploy the simulator along with a new instance of WIoTP and Cloudant](#Deploy-through-Bluemix-devOps-along-with-a-new-instance-of-IBM-Watson-IoT-Platform-and-Cloudant-Database)
 
-[## Option B: Deploy the simulator and use and existing instance of WIoTP](### Deploy a standalone version of the simulator through Bluemix devOps and use an existing instance of IBM Watson IoT Platform)
+[## Option B: Deploy the simulator and use and existing instance of WIoTP](#Deploy-a-standalone-version-of-the-simulator-through-Bluemix-devOps-and-use-an-existing-instance-of-IBM-Watson-IoT-Platform)
 
 ### Deploy through Bluemix devOps along with a new instance of IBM Watson IoT Platform and Cloudant Database
 
