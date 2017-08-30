@@ -17,6 +17,8 @@ module.exports = (io, middlewares) => {
 
   router.get('/cloudantinfo', (req, res) => res.send({ cloudantInfo: simulator.getCloudantInfo() }));
 
+  router.get('/appinfo', (req, res) => res.send({ appInfo: simulator.getAppInfo() }));
+
   router.post('/run', (req, res) => {
     // Return from the POST command regardless of the primise result
     // because the logs will be sent to the UI via socket

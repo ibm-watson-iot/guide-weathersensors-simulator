@@ -35,6 +35,7 @@ const SOCKET_MESSAGE_TYPE = 'MESSAGE';
 
 // Check if there is a bound WIoTP service
 const VCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES || '{}');
+const VCAP_APPLICATION = JSON.parse(process.env.VCAP_APPLICATION || '{}');
 
 const VCAP_WIOTP_CONFIG = VCAP_SERVICES['iotf-service'] && VCAP_SERVICES['iotf-service'][0];
 const VCAP_WIOTP_CREDENTIALS = VCAP_WIOTP_CONFIG && VCAP_WIOTP_CONFIG.credentials;
@@ -45,6 +46,8 @@ const VCAP_CLOUDANT_CREDENTIALS = VCAP_CLOUDANT_CONFIG && VCAP_CLOUDANT_CONFIG.c
 const VCAP_CLOUDANT_INFO = VCAP_CLOUDANT_CONFIG && {
   name: VCAP_CLOUDANT_CONFIG.name, url: VCAP_CLOUDANT_CREDENTIALS.url, host: VCAP_CLOUDANT_CREDENTIALS.host, password: VCAP_CLOUDANT_CREDENTIALS.password,
 };
+
+const VCAP_APP_INFO = VCAP_APPLICATION && { name: VCAP_APPLICATION.application_name, id: VCAP_APPLICATION.application_id };
 
 module.exports = (io) => {
   // Listen to socket connections if io was passed
@@ -396,6 +399,7 @@ module.exports = (io) => {
     isRunning: () => running,
     getWIoTPInfo: () => VCAP_WIOTP_INFO,
     getCloudantInfo: () => VCAP_CLOUDANT_INFO,
+    getAppInfo: () => VCAP_APP_INFO,
     stop: () => { running = false; },
     run: req => {
       running = true;
