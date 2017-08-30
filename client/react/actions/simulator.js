@@ -1,4 +1,5 @@
-import { SET_IS_RUNNING, SET_WIOTP_INFO, SET_CLOUDANT_INFO, SET_ERROR, SET_PUBLISH_INTERVAL_DIVISOR, SET_TEST_ENV, SET_DOMAIN } from '../constants/simulator';
+import { SET_IS_RUNNING, SET_WIOTP_INFO, SET_CLOUDANT_INFO, SET_APP_INFO, SET_ERROR, SET_PUBLISH_INTERVAL_DIVISOR,
+  SET_TEST_ENV, SET_DOMAIN } from '../constants/simulator';
 import SimulatorService from '../services/simulator';
 
 
@@ -15,6 +16,11 @@ const setWIoTPInfo = (wiotpInfo) => ({
 const setCloudantInfo = (cloudantInfo) => ({
   type: SET_CLOUDANT_INFO,
   cloudantInfo,
+});
+
+const setAppInfo = (appInfo) => ({
+  type: SET_APP_INFO,
+  appInfo,
 });
 
 const setError = (message) => ({
@@ -78,6 +84,16 @@ export const updateCloudantInfo = () => (dispatch) => {
   SimulatorService.getCloudantInfo()
   .then((response) => {
     dispatch(setCloudantInfo(response.cloudantInfo));
+  })
+  .catch((e) => {
+    dispatch(setError(e.message));
+  });
+};
+
+export const updateAppInfo = () => (dispatch) => {
+  SimulatorService.getAppInfo()
+  .then((response) => {
+    dispatch(setAppInfo(response.appInfo));
   })
   .catch((e) => {
     dispatch(setError(e.message));

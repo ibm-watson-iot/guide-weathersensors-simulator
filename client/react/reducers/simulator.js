@@ -1,10 +1,11 @@
-import { SET_IS_RUNNING, SET_WIOTP_INFO, SET_CLOUDANT_INFO, SET_ERROR, SET_PUBLISH_INTERVAL_DIVISOR,
+import { SET_IS_RUNNING, SET_WIOTP_INFO, SET_CLOUDANT_INFO, SET_APP_INFO, SET_ERROR, SET_PUBLISH_INTERVAL_DIVISOR,
   DEFAULT_PUBLISH_INTERVAL_DIVISOR, SET_TEST_ENV, SET_DOMAIN } from '../constants/simulator';
 
 const initialState = {
   isRunning: false,
   wiotpInfo: undefined,
   cloudantInfo: undefined,
+  appInfo: undefined,
   testEnv: undefined,
   domain: undefined,
   error: '',
@@ -22,6 +23,9 @@ export const simulator = (state = initialState, action) => {
 
     case SET_CLOUDANT_INFO:
       return Object.assign({}, state, { cloudantInfo: action.cloudantInfo });
+
+    case SET_APP_INFO:
+      return Object.assign({}, state, { appInfo: action.appInfo });
 
     case SET_ERROR:
       return Object.assign({}, state, { error: action.message });
