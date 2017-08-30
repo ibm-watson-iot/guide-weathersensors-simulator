@@ -23,9 +23,7 @@ stages:
             #!/bin/bash
             cf push "${CF_APP}" --no-start
             cf create-service iotf-service iotf-service-free wiotp-for-weather-sensors-simulator
-            cf create-service cloudantNoSQLDB Lite cloudant-for-weather-sensors-simulator
             cf bind-service "${CF_APP}" wiotp-for-weather-sensors-simulator
-            cf bind-service "${CF_APP}" cloudant-for-weather-sensors-simulator
             cf start "${CF_APP}"
             # View logs
             cf logs "${CF_APP}" --recent
