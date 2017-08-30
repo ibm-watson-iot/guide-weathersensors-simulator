@@ -64,11 +64,11 @@ Alternatively to creating API Key and token, you can follow the steps below to b
 
 <img src="./images/bluemix_visit_app_url.png">
 
-11. You will be redirected back to the simulator page. Because the simulator is now bound to the WIoTP service, you will no longer need to input access credentials. Also, you now can visit your WIoTP devices page directly from the link in the simulator.
+11. You will be redirected back to the simulator page. Because the simulator is now bound to the WIoTP service, you will no longer need to input access credentials. Also, you can visit your WIoTP devices page directly from the link in the simulator.
 
 <img src="./images/simulator_idle_bound.png">
 
-12. Click on Run Simulator. The simulation log will be displayed on the panel to the right. At any time during the simulation you can click on the WIoTP link so that you can see the devices and device types that the simulator app has registered.
+12. Click on Run Simulator. The simulation log will be displayed on the panel to the right. At any time during the simulation you can click on the `Launch WIoTP Dashboard` link so that you can see the devices and device types that the simulator app has registered.
 
 <img src="./images/simulator_running_bound.png">
 
@@ -95,7 +95,7 @@ Alternatively to creating API Key and token, you can follow the steps below to b
 
 4. The simulation log will be displayed on the panel to the right. At any time during the simulation you can click on the link to your Watson IoT Platform service so that you can see the devices and device types that the simulator app has registered.
 
-If you want to delete the devices and device types created by the simulator from your WIoTP service, just click on Delete simulated devices.
+5. If you want to delete the devices and device types created by the simulator from your WIoTP service, just click on Delete simulated devices.
 
 ### Troubleshooting
 
