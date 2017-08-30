@@ -66,7 +66,7 @@ Alternatively to creating API Key and token, you can follow the steps below to b
 
 11. You will be redirected back to the simulator page. Because the simulator is now bound to the WIoTP service, you will no longer need to input access credentials. Also, you now can visit your WIoTP devices page directly from the link in the simulator.
 
-<img src="./images/simulator_iddle_bound.png">
+<img src="./images/simulator_idle_bound.png">
 
 12. Click on Run Simulator. The simulation log will be displayed on the panel to the right. At any time during the simulation you can click on the WIoTP link so that you can see the devices and device types that the simulator app has registered.
 
