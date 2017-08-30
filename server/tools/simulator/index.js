@@ -47,7 +47,7 @@ const VCAP_CLOUDANT_INFO = VCAP_CLOUDANT_CONFIG && {
   name: VCAP_CLOUDANT_CONFIG.name, url: VCAP_CLOUDANT_CREDENTIALS.url, host: VCAP_CLOUDANT_CREDENTIALS.host, password: VCAP_CLOUDANT_CREDENTIALS.password,
 };
 
-const VCAP_APP_INFO = VCAP_APPLICATION && { name: VCAP_APPLICATION.application_name, id: VCAP_APPLICATION.application_id };
+const VCAP_APP_INFO = VCAP_APPLICATION && VCAP_APPLICATION.application_id && { name: VCAP_APPLICATION.application_name, id: VCAP_APPLICATION.application_id };
 
 module.exports = (io) => {
   // Listen to socket connections if io was passed
