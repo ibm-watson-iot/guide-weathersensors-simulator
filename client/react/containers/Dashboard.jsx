@@ -22,7 +22,7 @@ import Notification from '../components/Notification';
 import SimulatorFrame from '../components/SimulatorFrame';
 
 // action creators
-import { updateSimulatorStatus, updateWIoTPInfo, updateCloudantInfo, runSimulator, clearSuccess, clearError,
+import { updateSimulatorStatus, updateWIoTPInfo, updateCloudantInfo, updateAppInfo, runSimulator, clearSuccess, clearError,
   setPublishIntervalDivisor, setTestEnv, setDomain } from '../actions/simulator';
 import { clearLog } from '../actions/simulatorLog';
 
@@ -38,11 +38,12 @@ class Dashboard extends Component {
   }
 
   componentWillMount() {
-    const { dispatchUpdateSimulatorStatus, dispatchUpdateWIoTPInfo, dispatchUpdateCloudantInfo,
+    const { dispatchUpdateSimulatorStatus, dispatchUpdateWIoTPInfo, dispatchUpdateCloudantInfo, dispatchUpdateAppInfo,
       dispatchSetPublishIntervalDivisor, dispatchSetTestEnv, dispatchSetDomain } = this.props;
     // If simulator is running, set the isRunning state flag.
     dispatchUpdateWIoTPInfo();
     dispatchUpdateCloudantInfo();
+    dispatchUpdateAppInfo();
     dispatchUpdateSimulatorStatus();
     setInterval(dispatchUpdateSimulatorStatus, 5000);
     // If query params were passed, set their values to the state
@@ -60,13 +61,20 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { publishIntervalDivisor, testEnv, domain, isSimulatorRunning, wiotpInfo, cloudantInfo, logArray, lastRelevantLog,
+    const { publishIntervalDivisor, testEnv, domain, isSimulatorRunning, wiotpInfo, cloudantInfo, appInfo, logArray, lastRelevantLog,
       dispatchRunSimulator, dispatchClearLog } = this.props;
     const { org, apiKey, authToken, isModalVisible } = this.state;
     const inputsMissing = (!org || !apiKey || !authToken) && !wiotpInfo;
+    const enterCredentialsMessage = 'Enter WIoTP org and credentials then click on Run Simulator';
+    const initialIdleMessage = appInfo ?
+      <span>
+        {`${enterCredentialsMessage} or `}
+        <a href={`https://console.bluemix.net/apps/${appInfo.id}?paneId=connected-objects`} target="_blank">{'connect an WIoTP service'}</a>
+      </span>
+      : enterCredentialsMessage;
     const defaultNotificationMessage = inputsMissing
-        ? 'Enter WIoTP org and credentials then click on Run Simulator.'
-        : 'Click on Run Simulator.';
+        ? initialIdleMessage
+        : 'Click on Run Simulator';
     const notificationType = lastRelevantLog.type;
     const notificationMessage = lastRelevantLog.message || (isSimulatorRunning ? 'Simulator running ...' : defaultNotificationMessage);
     const isSimulatorButtonDisabled = isSimulatorRunning || inputsMissing;
@@ -113,9 +121,9 @@ class Dashboard extends Component {
       />
     );
 
-    // const wiotpServiceNameLabel = wiotpConnectionInfo && wiotpConnectionInfo.name ?
-    //   <Label text={`Service name: ${wiotpConnectionInfo.name}`} centered normal />
-    //   : null;
+    const wiotpServiceNameLabel = wiotpConnectionInfo && wiotpConnectionInfo.name ?
+      <Label text={`Service name: ${wiotpConnectionInfo.name}`} centered normal />
+      : null;
 
     const wiotpServiceOrgLabel = wiotpConnectionInfo && wiotpConnectionInfo.org ?
       <Label text={`Org: ${wiotpConnectionInfo.org}`} centered normal />
@@ -128,8 +136,6 @@ class Dashboard extends Component {
         centered
       />
     ) : null;
-
-    // const cloudantServiceNameLabel = cloudantInfo ? <Label text={`Service Name: ${cloudantInfo.name}`} centered normal /> : null;
 
     const cloudantLinkModal = cloudantInfo ? (
       <Modal
@@ -159,6 +165,7 @@ class Dashboard extends Component {
         {headerLabel}
         {wiotpLinkLabel}
         {wiotpLink}
+        {wiotpServiceNameLabel}
         {wiotpServiceOrgLabel}
         {cloudantLink}
         {runSimulatorButton}
@@ -233,6 +240,7 @@ const mapStateToProps = (state) => ({
   isSimulatorRunning: state.simulator.isRunning,
   wiotpInfo: state.simulator.wiotpInfo,
   cloudantInfo: state.simulator.cloudantInfo,
+  appInfo: state.simulator.appInfo,
   logArray: state.simulatorLog.completeLog,
   lastRelevantLog: state.simulatorLog.lastRelevantLog,
 });
@@ -244,6 +252,7 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchUpdateSimulatorStatus: () => dispatch(updateSimulatorStatus()),
   dispatchUpdateWIoTPInfo: () => dispatch(updateWIoTPInfo()),
   dispatchUpdateCloudantInfo: () => dispatch(updateCloudantInfo()),
+  dispatchUpdateAppInfo: () => dispatch(updateAppInfo()),
   dispatchRunSimulator: (config) => dispatch(runSimulator(config)),
   dispatchClearLog: () => dispatch(clearLog()),
   dispatchClearSuccess: () => dispatch(clearSuccess()),
