@@ -10,9 +10,75 @@ A web app that simulates several weather sensors in the Haifa region that send d
 
 ## Run your own copy of the web application
 
-[Option A: Deploy the simulator along with a new instance of WIoTP](#deploy-through-bluemix-devops-along-with-a-new-instance-of-ibm-watson-iot-platform)
+[Option A: Deploy the simulator and use and existing instance of WIoTP](#deploy-a-standalone-version-of-the-simulator-through-bluemix-devops-and-use-an-existing-instance-of-ibm-watson-iot-platform)
 
-[Option B: Deploy the simulator and use and existing instance of WIoTP](#deploy-a-standalone-version-of-the-simulator-through-bluemix-devops-and-use-an-existing-instance-of-ibm-watson-iot-platform)
+[Option B: Deploy the simulator along with a new instance of WIoTP](#deploy-through-bluemix-devops-along-with-a-new-instance-of-ibm-watson-iot-platform)
+
+
+### Deploy a standalone version of the simulator through Bluemix devOps and use an existing instance of IBM Watson IoT Platform
+
+1. Click on the button below and follow the instructions in Bluemix to deploy and view your web app.
+
+[![Create toolchain](https://bluemix.net/devops/graphics/create_toolchain_button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-watson-iot/guide-weathersensors-simulator)  
+
+2. Click View app to launch your web app once the pipeline has deployed the app. (The deployment takes a few minutes. You can check the status by clicking the Delivery pipeline tile.) 
+
+<img src="./images/bluemix_deploy.png">
+
+3. In the device simulator app, you need to provide your IoTP Org ID, API Key and Authentication Token for it to access your IoTP service to delete/create devices and device types, and also to publish device events.
+
+Follow steps 4 to 6 below to obtain API Key and token. Alternatively, you can bind your existing WIoTP service to the simulator and avoid having to create access credentials as well as type them in the simulator. Skip to step 6 if you prefer the binding alternative.
+
+4. Your WIoTP Organization ID can be found underneath your user name on the top right corner of WIoTP menu bar as shown below.
+
+<img src="./images/wiotp_org.png">
+
+5. To obtain your WIoTP credentials, click on Apps option in the IoT platform left navigator and generate API key and authentication token. Don't forget to write down the authentication token as it will not be available after you finish the process of creating your API key.  
+
+<img src="./images/wiotp_generate_api_key.png">
+
+<img src="./images/wiotp_api_key_token.png">
+
+6. Back to the simulator web app, fill in the fields (organization, API Key and authentication token).
+
+<img src="./images/simulator_idle_unbound.png">
+
+Alternatively to creating API Key and token, you can follow the steps below to bind your existing WIoTP service with the simulator. If you perfomed steps 4 to 6, skip to step 13.
+
+7. Click on the link to start the process of binding WIoTP to the simulator, as shown below.
+
+<img src="./images/simulator_idle_empty.png">
+
+8. In Bluemix, click on `Connect existing`.
+
+<img src="./images/bluemix_connect_existing.png">
+
+9. Select the WIoTP service you want to bind and click on `Connect`.
+
+<img src="./images/bluemix_bind_wiotp.png">
+
+10. Click on `Restage` to restar the simulator.
+
+<img src="./images/bluemix_restage_app.png">
+
+11. Wait for the simulator to restart and then click on `Visit App URL`
+
+<img src="./images/bluemix_visit_app_url.png">
+
+12. You will be redirected back to the simulator page. Because the simulator is now bound to the WIoTP service, you will no longer need to input access credentials. Also, you now can visit your WIoTP devices page directly from the link in the simulator.
+
+<img src="./images/simulator_iddle_bound.png">
+
+13. Click on Run Simulator. The simulation log will be displayed on the panel to the right. At any time during the simulation you can click on the WIoTP link so that you can see the devices and device types that the simulator app has registered.
+
+<img src="./images/simulator_running_bound.png">
+
+14. The information box at the top will display the current status of simulation. When the simulation is done, you should see a success message.  
+
+<img src="./images/simulator_finished_bound.png">
+
+15. If you want to delete the devices and device types created by the simulator from the WIoTP service, just click on Delete simulated devices.
+
 
 ### Deploy through Bluemix devOps along with a new instance of IBM Watson IoT Platform
 
@@ -31,41 +97,6 @@ A web app that simulates several weather sensors in the Haifa region that send d
 4. The simulation log will be displayed on the panel to the right. At any time during the simulation you can click on the link to your Watson IoT Platform service so that you can see the devices and device types that the simulator app has registered.
 
 If you want to delete the devices and device types created by the simulator from your WIoTP service, just click on Delete simulated devices.
-
-
-### Deploy a standalone version of the simulator through Bluemix devOps and use an existing instance of IBM Watson IoT Platform
-
-1. Click on the button below and follow the instructions in Bluemix to deploy and view your web app.
-
-[![Create toolchain](https://bluemix.net/devops/graphics/create_toolchain_button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-watson-iot/guide-weathersensors-simulator)  
-
-2. Click View app to launch your web app once the pipeline has deployed the app. (The deployment takes a few minutes. You can check the status by clicking the Delivery pipeline tile.) 
-
-<img src="./images/bluemix_deploy.png">
-
-3. In the device simulator app, you need to provide your IoTP Org ID, API Key and Authentication Token for it to access your IoTP service to delete/create devices and device types, and also to publish device events. Your WIoTP Org ID can be found underneath your user name on the top right corner of WIoTP menu bar as shown below.
-
-<img src="./images/wiotp_org.png">
-
-To obtain your IoTP credential, click on Apps option in the IoT platform left navigator and generate API key and authentication token. Don't forget to write down the authentication token as it will not be available after you finish the process of creating your API key.  
-
-<img src="./images/wiotp_generate_api_key.png">
-
-<img src="./images/wiotp_api_key_token.png">
-
-4. Back to the simulator web app, fill in the fields (org, API Key and authentication token).
-
-<img src="./images/simulator_idle_unbound.png">
-
-5. Click on Run Simulator. The simulation log will be displayed on the panel to the right. At any time during the simulation you can click on the WIoTP link so that you can see the devices and device types that the simulator app has registered.
-
-<img src="./images/simulator_running_unbound.png">
-
-The information box at the top will display the current status of simulation. When the simulation is done, you should see a success message.  
-
-<img src="./images/simulator_finished_unbound.png">
-
-If you want to delete the devices and device types created by the simulator from the WIoTP service, just click on Delete simulated devices.
 
 ### Troubleshooting
 
