@@ -10,7 +10,7 @@ A web app that simulates 17 weather stations in the Haifa district (Israel) and 
 
 ## Run your own copy of the web application
 
-[Option A: Deploy the simulator and use and existing instance of WIoTP](#deploy-a-standalone-version-of-the-simulator-through-bluemix-devops-and-use-an-existing-instance-of-ibm-watson-iot-platform)
+[Option A: Deploy the simulator and use an existing instance of WIoTP](#deploy-a-standalone-version-of-the-simulator-through-bluemix-devops-and-use-an-existing-instance-of-ibm-watson-iot-platform)
 
 [Option B: Deploy the simulator along with a new instance of WIoTP](#deploy-through-bluemix-devops-along-with-a-new-instance-of-ibm-watson-iot-platform)
 
@@ -25,8 +25,14 @@ A web app that simulates 17 weather stations in the Haifa district (Israel) and 
 
 <img src="./images/bluemix_deploy.png">
 
+After you have deployed the app, bind your existing Watson IoT platform service to the app using one of the following two options:
+
+[Option 1: Generate access credentials in WIoTP and input then in the simulator (steps 3 to 5)](#generate-access-credentials-in-wiotp-and-input-then-in-the-simulator)
+
+[Option 2: Bind the simulator with WIoTP using Bluemix connections (steps 6 to 11)](#bind-the-simulator-with-wiotp-using-bluemix-connections)
+
+#### Generate access credentials in WIoTP and input then in the simulator
 In the device simulator app, you need to provide your WIoTP Organization ID, API Key and Authentication Token for it to access your WIoTP service to delete/create devices and device types, and also to publish device events.  
-Follow steps 3 to 5 below to obtain API Key and token. Alternatively, you can bind your existing WIoTP service to the simulator and avoid having to create access credentials as well as type them in the simulator. Skip to step 6 if you prefer the binding alternative.
 
 3. Your WIoTP Organization ID can be found underneath your user name on the top right corner of WIoTP menu bar as shown below.
 
@@ -41,6 +47,8 @@ Follow steps 3 to 5 below to obtain API Key and token. Alternatively, you can bi
 5. Back to the simulator web app, fill in the fields (organization, API Key and authentication token).
 
 <img src="./images/simulator_idle_unbound.png">
+
+#### Bind the simulator with WIoTP using Bluemix connections
 
 Alternatively to creating API Key and token, you can follow the steps below to bind your existing WIoTP service with the simulator. If you perfomed steps 3 to 5, skip to step 12.
 
