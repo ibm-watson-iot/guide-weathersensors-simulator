@@ -65,11 +65,11 @@ class Dashboard extends Component {
       dispatchRunSimulator, dispatchClearLog } = this.props;
     const { org, apiKey, authToken, isModalVisible } = this.state;
     const inputsMissing = (!org || !apiKey || !authToken) && !wiotpInfo;
-    const enterCredentialsMessage = 'Enter WIoTP org and credentials then click on Run Simulator';
+    const enterCredentialsMessage = 'To run the simulator, bind your Watson IoT platform organization by entering the credentials below';
     const initialIdleMessage = appInfo ?
       <span>
         {`${enterCredentialsMessage} or `}
-        <a href={`https://console.bluemix.net/apps/${appInfo.id}?paneId=connected-objects`}>{'bind a WIoTP service'}</a>
+        <a href={`https://console.bluemix.net/apps/${appInfo.id}?paneId=connected-objects`}>{'[bind via Bluemix connections]'}</a>
       </span>
       : enterCredentialsMessage;
     const defaultNotificationMessage = inputsMissing
