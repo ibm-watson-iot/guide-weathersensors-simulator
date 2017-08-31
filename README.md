@@ -5,7 +5,7 @@ This sample application is included as a component in a set of guides that step 
 # Weather sensors simulator
 <img src="./images/simulator_finished_unbound.png">
 
-A web app that simulates several weather sensors in the Haifa region that send data to IBM Watson IoT Platform.
+A web app that simulates 17 weather stations in the Haifa district (Israel) and send their data to IBM Watson IoT Platform
 
 
 ## Run your own copy of the web application
@@ -25,7 +25,7 @@ A web app that simulates several weather sensors in the Haifa region that send d
 
 <img src="./images/bluemix_deploy.png">
 
-In the device simulator app, you need to provide your IoTP Org ID, API Key and Authentication Token for it to access your IoTP service to delete/create devices and device types, and also to publish device events.  
+In the device simulator app, you need to provide your WIoTP Organization ID, API Key and Authentication Token for it to access your WIoTP service to delete/create devices and device types, and also to publish device events.  
 Follow steps 3 to 5 below to obtain API Key and token. Alternatively, you can bind your existing WIoTP service to the simulator and avoid having to create access credentials as well as type them in the simulator. Skip to step 6 if you prefer the binding alternative.
 
 3. Your WIoTP Organization ID can be found underneath your user name on the top right corner of WIoTP menu bar as shown below.
