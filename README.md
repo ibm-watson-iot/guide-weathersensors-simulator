@@ -5,7 +5,7 @@ This sample application is included as a component in a set of guides that step 
 # Weather sensors simulator
 <img src="./images/simulator_finished_unbound.png">
 
-A web app that simulates 17 weather stations in the Haifa district (Israel) and send their data to IBM Watson IoT Platform
+A web app that simulates 17 weather stations in the Haifa district (Israel) and send their data to IBM Watson IoT Platform.
 
 
 ## Run your own copy of the web application
@@ -56,7 +56,7 @@ Alternatively to creating API Key and token, you can follow the steps below to b
 
 <img src="./images/bluemix_bind_wiotp.png">
 
-9. Click on `Restage` to restar the simulator.
+9. Click on `Restage` to restart the simulator.
 
 <img src="./images/bluemix_restage_app.png">
 
