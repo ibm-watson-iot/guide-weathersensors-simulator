@@ -27,11 +27,11 @@ A web app that simulates 17 weather stations in the Haifa district (Israel) and 
 
 After you have deployed the app, bind your existing Watson IoT platform service to the app using one of the following two options:
 
-[Option 1: Generate access credentials in WIoTP and input then in the simulator (steps 3 to 5)](#generate-access-credentials-in-wiotp-and-input-then-in-the-simulator)
+[Option 1: Generate access credentials in WIoTP and input them in the simulator (steps 3 to 5)](#generate-access-credentials-in-wiotp-and-input-them-in-the-simulator)
 
 [Option 2: Bind the simulator with WIoTP using Bluemix connections (steps 6 to 11)](#bind-the-simulator-with-wiotp-using-bluemix-connections)
 
-#### Generate access credentials in WIoTP and input then in the simulator
+#### Generate access credentials in WIoTP and input them in the simulator
 In the device simulator app, you need to provide your WIoTP Organization ID, API Key and Authentication Token for it to access your WIoTP service to delete/create devices and device types, and also to publish device events.  
 
 3. Your WIoTP Organization ID can be found underneath your user name on the top right corner of WIoTP menu bar as shown below.
