@@ -69,7 +69,7 @@ class Dashboard extends Component {
     const initialIdleMessage = appInfo ?
       <span>
         {`${enterCredentialsMessage} or `}
-        <a href={`https://console.bluemix.net/apps/${appInfo.id}?paneId=connected-objects`}>{'[bind via Bluemix connections]'}</a>
+        <a href={`https://console.bluemix.net/apps/${appInfo.id}?paneId=connected-objects`}>{'bind via Bluemix connections'}</a>
       </span>
       : enterCredentialsMessage;
     const defaultNotificationMessage = inputsMissing
